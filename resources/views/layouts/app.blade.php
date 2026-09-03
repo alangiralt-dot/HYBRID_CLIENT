@@ -35,7 +35,7 @@
                 @auth
                 @yield('confirm_order')
                 @endauth
-                <a href="{{-- route('orders.showOrderDetails', 'current') --}}" 
+                <a href="{{-- route('orders.showOrderDetails', 'current') --}}"
                    class="p-1 bg-transparent text-gray-400 hover:text-red-600 transition" 
                 >
                     <svg class="h-[27px] w-[27px]" xmlns="http://w3.org" xmlns:xlink="http://w3.org" version="1.1" viewBox="0 0 256 256" xml:space="preserve">
@@ -79,42 +79,42 @@
                             </button>
 
                             <div id="exterior-menu" class="hidden pl-3 space-y-1 ml-2 border-l border-gray-200">
-                                <a href="{{ url('/bigues-fusta-laminades-autoclau') }}" class="block px-3 py-1 text-xs text-gray-500 hover:text-red-600 transition">
+                                <a href="{{-- url('/bigues-fusta-laminades-autoclau') --}}" class="block px-3 py-1 text-xs text-gray-500 hover:text-red-600 transition">
                                     Bigues laminades autoclau
                                 </a>
-                                <a href="{{ url('/llistons-fusta-autoclau-marro') }}" class="block px-3 py-1 text-xs text-gray-500 hover:text-red-600 transition">
+                                <a href="{{-- url('/llistons-fusta-autoclau-marro') --}}" class="block px-3 py-1 text-xs text-gray-500 hover:text-red-600 transition">
                                     Llistons autoclau marró
                                 </a>
-                                <a href="{{ url('/llistons-fusta-autoclau-verd') }}" class="block px-3 py-1 text-xs text-gray-500 hover:text-red-600 transition">
+                                <a href="{{-- url('/llistons-fusta-autoclau-verd') --}}" class="block px-3 py-1 text-xs text-gray-500 hover:text-red-600 transition">
                                     Llistons autoclau verd
                                 </a>
-                                <a href="{{ url('/travesses-fusta-jardi') }}" class="block px-3 py-1 text-xs text-gray-500 hover:text-red-600 transition">
+                                <a href="{{-- url('/travesses-fusta-jardi') --}}" class="block px-3 py-1 text-xs text-gray-500 hover:text-red-600 transition">
                                     Travesses per a jardí
                                 </a>
                             </div>
                         </div>
 
-                        <a href="{{ url('/llistons-de-fusta') }}" class="block px-3 py-1.5 text-xs font-medium text-gray-600 hover:text-red-600 transition">
+                        <a href="{{-- url('/llistons-de-fusta') --}}" class="block px-3 py-1.5 text-xs font-medium text-gray-600 hover:text-red-600 transition">
                             Llistons de fusta
                         </a>
                         
-                        <a href="{{ url('/llistons-tropicals') }}" class="block px-3 py-1.5 text-xs font-medium text-gray-600 hover:text-red-600 transition">
+                        <a href="{{-- url('/llistons-tropicals') --}}" class="block px-3 py-1.5 text-xs font-medium text-gray-600 hover:text-red-600 transition">
                             Llistons tropicals
                         </a>
 
-                        <a href="{{ url('/motllures-de-fusta-pi-gallec') }}" class="block px-3 py-1.5 text-xs font-medium text-gray-600 hover:text-red-600 transition">
+                        <a href="{{-- url('/motllures-de-fusta-pi-gallec') --}}" class="block px-3 py-1.5 text-xs font-medium text-gray-600 hover:text-red-600 transition">
                             Motllures Pi Gallec
                         </a>
 
-                        <a href="{{ url('/pals-rodons-de-fusta-a-l-autoclau') }}" class="block px-3 py-1.5 text-xs font-medium text-gray-600 hover:text-red-600 transition">
+                        <a href="{{-- url('/pals-rodons-de-fusta-a-l-autoclau') --}}" class="block px-3 py-1.5 text-xs font-medium text-gray-600 hover:text-red-600 transition">
                             Pals rodons autoclau
                         </a>
 
-                        <a href="{{ url('/perfils-laminats-finestra') }}" class="block px-3 py-1.5 text-xs font-medium text-gray-600 hover:text-red-600 transition">
+                        <a href="{{-- url('/perfils-laminats-finestra') --}}" class="block px-3 py-1.5 text-xs font-medium text-gray-600 hover:text-red-600 transition">
                             Perfils laminats finestra
                         </a>
 
-                        <a href="{{ url('/fusta-vella-i-fusta-envellida') }}" class="block px-3 py-1.5 text-xs font-medium text-gray-600 hover:text-red-600 transition">
+                        <a href="{{-- url('/fusta-vella-i-fusta-envellida') --}}" class="block px-3 py-1.5 text-xs font-medium text-gray-600 hover:text-red-600 transition">
                             Fusta vella i envellida
                         </a>
                     </div>
@@ -130,7 +130,7 @@
             </div>
             <div class="border-t border-[#bed1dc] pt-5 space-y-1.5">
 
-                <a href="{{ url('/el-meu-perfil') }}" class="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-xl transition {{ request()->is('el-meu-perfil') ? 'text-gray-900 bg-gray-50' : 'text-gray-700 bg-white hover:bg-gray-50' }}">
+                <a href="{{-- url('/el-meu-perfil') --}}" class="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-xl transition {{ request()->is('el-meu-perfil') ? 'text-gray-900 bg-gray-50' : 'text-gray-700 bg-white hover:bg-gray-50' }}">
                     <svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                     <span>El meu perfil</span>
                 </a>
