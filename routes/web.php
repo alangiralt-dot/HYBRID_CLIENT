@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CatalogueController;
+use App\Http\Controllers\OrderController;
+
 /*
 Route::get('/', function () {
     return view('test');
