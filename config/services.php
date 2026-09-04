@@ -34,5 +34,9 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+    
+    'api_serra' => [
+        'url' => env('API_BASE_URL', 'http://localhost/alan/API_SERRA/public'),
+    ],
 
 ];
