@@ -27,7 +27,7 @@ class OrderController extends Controller
         ], 200);
     }
 
-    public function addToCurrentOrder(Request $request)
+    public function updateQuantityInCurrentOrder(Request $request)
     {
         $request->validate([
             'product_id' => 'required|integer',

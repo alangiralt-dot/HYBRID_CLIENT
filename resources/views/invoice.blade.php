@@ -165,7 +165,7 @@
 
         // 2. Preparem la petició POST cap a la teva ruta oficial d'afegir
         const xhr = new XMLHttpRequest();
-        xhr.open('POST', "{{ route('orders.add') }}", true);
+        xhr.open('POST', "{{ route('orders.updateQuantity') }}", true);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
 

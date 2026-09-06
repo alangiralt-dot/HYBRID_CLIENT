@@ -12,7 +12,7 @@ Route::get('/comandes/current', function (\Illuminate\Http\Request $request) {
     return (new \App\Http\Controllers\OrderController())->showOrderDetails($request, 'current');
 })->name('orders.showOrderDetails.current');
 
-Route::post('/orders/add', [OrderController::class, 'addToCurrentOrder'])->name('orders.add');
+Route::post('/orders/update-quantity', [OrderController::class, 'updateQuantityInCurrentOrder'])->name('orders.updateQuantity');
 Route::post('/orders/remove', [OrderController::class, 'removeFromCurrentOrder'])->name('orders.remove');
 
 Route::get('/login', function () {
