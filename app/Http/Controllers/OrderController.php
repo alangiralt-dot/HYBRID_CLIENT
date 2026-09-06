@@ -9,6 +9,24 @@ use App\Models\ChildProduct;
 
 class OrderController extends Controller
 {
+    /**
+     * Neteja completament el carretó i les dades de l'API de la sessió de PHP.
+     */
+    public function clearCartSession(Request $request)
+    {
+        // Esborrem en bloc les dues claus identificades al depurador
+        $request->session()->forget([
+            'current_order',
+            'request_preview_data'
+        ]);
+
+        // Responem de forma asíncrona amb un codi d'èxit 200 OK
+        return response()->json([
+            'status' => 'success',
+            'message' => 'El carretó i les dades de la sessió de PHP s\'han esborrat correctament.'
+        ], 200);
+    }
+
     public function addToCurrentOrder(Request $request)
     {
         $request->validate([

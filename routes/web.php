@@ -4,11 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CatalogueController;
 use App\Http\Controllers\OrderController;
 
-/*
-Route::get('/', function () {
-    return view('test');
-});
-*/
+// rutes públiques
 Route::get('/', function () {
     return redirect()->route('orders.showOrderDetails.current');
 });
@@ -18,6 +14,11 @@ Route::get('/comandes/current', function (\Illuminate\Http\Request $request) {
 
 Route::post('/orders/add', [OrderController::class, 'addToCurrentOrder'])->name('orders.add');
 Route::post('/orders/remove', [OrderController::class, 'removeFromCurrentOrder'])->name('orders.remove');
+
+Route::get('/login', function () {
+    return view('login');
+})->name('login');
+Route::post('/orders/clear-session', [OrderController::class, 'clearCartSession'])->name('orders.clearSession');
 
 // rutes només accessibles amb una sessió d'usuari
 Route::middleware(['auth'])->group(function () {
