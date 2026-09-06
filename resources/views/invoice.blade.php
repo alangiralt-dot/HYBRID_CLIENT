@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('confirm_order')
-    @if($isCurrent && !$products->isEmpty())
+    @if($isCurrent && !empty($products))
         <form action="{{ route('orders.confirm') }}" method="POST" class="px-2 border-[#bed1dc]">
             @csrf
             <button type="submit" class="bg-[#fffacd] hover:bg-[#fff27e] border border-[#bed1dc] px-4 py-2 rounded-xl text-xs text-black font-medium tracking-wider uppercase shadow-sm transition">
@@ -16,7 +16,7 @@
 @section('content')
 <div class="space-y-6">
 
-    @if(!empty($conflicting_references))
+    @if(!empty($error_message))
         <div class="bg-red-50 border border-red-200 rounded-2xl p-4 flex items-start gap-3">
             <div class="text-red-500 mt-0.5">
                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -26,9 +26,7 @@
             <div>
                 <h4 class="text-sm font-medium text-red-800">Atenció: Referències no disponibles</h4>
                 <p class="text-xs text-red-700 mt-1 font-normal">
-                    No s'ha pogut processar correctament la tarifa o mida dels següents productes: 
-                    <span class="font-bold">{{ implode(', ', $conflicting_references) }}</span>. 
-                    S'han retirat de la comanda en curs.
+                    {{ $error_message }} 
                 </p>
             </div>
         </div>
@@ -49,7 +47,7 @@
                     
                     <div class="grid grid-cols-12 gap-4 items-center">
                         <div class="col-span-6 uppercase text-black font-normal break-words">
-                            {{ $product->fatherProduct->name ?? 'Material Industrial' }}
+                            {{ $product->name ?? 'Material Industrial' }}
                         </div>
                         
                         <div class="col-span-6 text-right font-normal flex justify-end">
@@ -86,22 +84,22 @@
                                 <div class="flex items-center border border-[#bed1dc] rounded-lg overflow-hidden bg-white shadow-3xs">
                                     <button type="button" onclick="updateInvoiceSession({{ $product->id }}, -{{ $product->pack ?? 1 }}, this.parentNode.querySelector('input').value)" class="px-2 py-1 bg-[#fffacd] text-black hover:bg-[#fff27e] transition border-r border-[#bed1dc] select-none text-[14px]">-</button>
                                    
-                                    <input type="number" name="quantity[{{ $product->id }}]" value="{{ $quantities[$product->id]['quantity'] }}" min="{{ $product->pack ?? 1 }}" step="{{ $product->pack ?? 1 }}" class="w-10 text-center text-[12px] bg-white text-black font-normal focus:outline-none [appearance:textfield] [&amp;::-webkit-outer-spin-button]:appearance-none [&amp;::-webkit-inner-spin-button]:appearance-none">
+                                    <input type="number" name="quantity[{{ $product->id }}]" value="{{ $product->quantity }}" min="{{ $product->pack ?? 1 }}" step="{{ $product->pack ?? 1 }}" class="w-10 text-center text-[12px] bg-white text-black font-normal focus:outline-none [appearance:textfield] [&amp;::-webkit-outer-spin-button]:appearance-none [&amp;::-webkit-inner-spin-button]:appearance-none">
                                     
                                     <button type="button" onclick="updateInvoiceSession({{ $product->id }}, {{ $product->pack ?? 1 }}, this.parentNode.querySelector('input').value)" class="px-2 py-1 bg-[#fffacd] text-black hover:bg-[#fff27e] transition border-l border-[#bed1dc] select-none text-[14px]">+</button>
                                 </div>
                             @else
-                                {{ $product->pivot->quantity }}
+                                {{ $product->quantity }}
                             @endif
                         </div>
 
 
                         <div class="col-span-2 tracking-wide whitespace-nowrap">
-                            {{ number_format($isCurrent ? $product->current_unit_price : $product->pivot->sale_unit_price, 2, ',', '.') }} {{ $product->unit->unit }}
+                            {{ number_format($product->unit_price, 2, ',', '.') }} {{ $product->unit }}
                         </div>
 
                         <div class="col-span-2 text-right font-bold text-black tracking-wide">
-                            {{ number_format($isCurrent ? $quantities[$product->id]['subtotal'] : $product->pivot->subtotal, 2, ',', '.') }} €
+                            {{ number_format($product->subtotal, 2, ',', '.') }} €
                         </div>
 
                     </div>
@@ -138,7 +136,7 @@
             <div class="col-span-4 space-y-2 text-[13px] font-normal">
                 <div class="flex justify-between text-black">
                     <span class="uppercase">Base Imposable</span>
-                    <span class="font-bold text-black tracking-wide">{{ number_format($taxableBasis, 2, ',', '.') }} €</span>
+                    <span class="font-bold text-black tracking-wide">{{ number_format($taxable_basis, 2, ',', '.') }} €</span>
                 </div>
                 <div class="flex justify-between text-black">
                     <span>IVA (21%)</span>

@@ -35,7 +35,7 @@
                 @auth
                 @yield('confirm_order')
                 @endauth
-                <a href="{{-- route('orders.showOrderDetails', 'current') --}}"
+                <a href="{{ route('orders.showOrderDetails', 'current') }}"
                    class="p-1 bg-transparent text-gray-400 hover:text-red-600 transition" 
                 >
                     <svg class="h-[27px] w-[27px]" xmlns="http://w3.org" xmlns:xlink="http://w3.org" version="1.1" viewBox="0 0 256 256" xml:space="preserve">
