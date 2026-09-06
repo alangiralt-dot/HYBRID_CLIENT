@@ -58,9 +58,7 @@
     <div class="flex flex-1 overflow-hidden">
         <aside class="w-64 bg-white border-r border-[#e2e8f0] flex flex-col justify-between p-5 shrink-0">
             <div class="space-y-6">
-                @auth
-                <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest px-3">El meu espai</div>
-                @endauth
+                <div id="navElMeuEspai" class="hidden text-[10px] font-bold text-gray-400 uppercase tracking-widest px-3">El meu espai</div>
                 <nav class="space-y-1.5">
                     <button id="timber-btn" class="w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium rounded-xl transition {{ !request()->is('comandes*') && !request()->is('el-meu-perfil') && !request()->is('login') ? 'text-gray-900 bg-gray-50' : 'text-gray-700 bg-white hover:bg-gray-50' }}">
                         <div class="flex items-center space-x-3">
@@ -163,6 +161,8 @@
             // Exterior timber subcategory toggle (Level 2 to Level 3)
             const exteriorBtn = document.getElementById('exterior-btn');
             const exteriorMenu = document.getElementById('exterior-menu');
+            
+            const navElMeuEspai = document.getElementById('navElMeuEspai');
 
             if (timberBtn && timberMenu) {
                 timberBtn.addEventListener('click', function (event) {
@@ -185,22 +185,15 @@
             // Control dinàmic de la visibilitat dels enllaços
             if (token) {
                 navLogout.classList.remove('hidden'); // Mostrem Logout si està loguejat
+                navElMeuEspai.classList.remove('hidden');
                 navLogin.classList.add('hidden');
             } else {
                 navLogin.classList.remove('hidden');  // Mostrem Login si és un convidat
                 navLogout.classList.add('hidden');
+                navElMeuEspai.classList.add('hidden');
             }
             // 3. ACCIÓ ASÍNCRONA DE LOGOUT
             // Comportament del clic del botó de Logout asíncron
-            /*navLogout.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                // Esborrem completament el token de la memòria del navegador
-                sessionStorage.removeItem('access_token');
-                
-                // Redirigim directament a la pantalla principal per netejar la vista
-                window.location.href = "{{ url('/') }}";
-            });*/
             navLogout.addEventListener('click', function(e) {
                 e.preventDefault();
                 
