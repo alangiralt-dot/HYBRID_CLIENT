@@ -129,29 +129,22 @@
 
             </div>
             <div class="border-t border-[#bed1dc] pt-5 space-y-1.5">
-
                 <a href="{{-- url('/el-meu-perfil') --}}" class="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-xl transition {{ request()->is('el-meu-perfil') ? 'text-gray-900 bg-gray-50' : 'text-gray-700 bg-white hover:bg-gray-50' }}">
                     <svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                     <span>El meu perfil</span>
                 </a>
-                @auth
-                <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="flex items-center space-x-3 px-3 py-2 text-sm font-medium text-gray-500 hover:text-red-600 rounded-xl transition ">
+
+                <a href="#" id="navLogout" class="flex items-center space-x-3 px-3 py-2 text-sm font-medium text-gray-500 hover:text-red-600 rounded-xl transition hidden">
                     <svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
                     <span>Logout</span>
                 </a>
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
-                    @csrf
-                </form>
-                @endauth
                 
-                @guest
-                <a href="{{-- route('login') --}}" class="flex items-center space-x-3 px-3 py-2 text-sm font-medium {{-- request()->is('login') ? 'text-gray-900 bg-gray-50' : 'text-gray-700 bg-white hover:bg-gray-50' --}} rounded-xl transition">
+                <a href="{{ route('login') }}" id="navLogin" class="flex items-center space-x-3 px-3 py-2 text-sm font-medium {{ request()->is('login') ? 'text-gray-900 bg-gray-50' : 'text-gray-700 bg-white hover:bg-gray-50' }} rounded-xl transition hidden">
                     <svg class="h-4 w-4 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
                     </svg>
                     <span>Login</span>
                 </a>
-                @endguest
             </div>
         </aside>
         <main class="flex-1 overflow-y-auto p-8 bg-[#f8fafc]">
@@ -162,6 +155,7 @@
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // 1. DESPLEGABLES DEL MENÚ LATERAL (Fustes)
             // Timber category toggle (Level 1 to Level 2)
             const timberBtn = document.getElementById('timber-btn');
             const timberMenu = document.getElementById('timber-menu');
@@ -183,6 +177,50 @@
                     exteriorMenu.classList.toggle('hidden');
                 });
             }
+            // 2. CONTROL DE VISIBILITAT DE LA SESSIÓ (Login / Logout)
+            const token = sessionStorage.getItem('access_token');
+            const navLogin = document.getElementById('navLogin');
+            const navLogout = document.getElementById('navLogout');
+
+            // Control dinàmic de la visibilitat dels enllaços
+            if (token) {
+                navLogout.classList.remove('hidden'); // Mostrem Logout si està loguejat
+                navLogin.classList.add('hidden');
+            } else {
+                navLogin.classList.remove('hidden');  // Mostrem Login si és un convidat
+                navLogout.classList.add('hidden');
+            }
+            // 3. ACCIÓ ASÍNCRONA DE LOGOUT
+            // Comportament del clic del botó de Logout asíncron
+            /*navLogout.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Esborrem completament el token de la memòria del navegador
+                sessionStorage.removeItem('access_token');
+                
+                // Redirigim directament a la pantalla principal per netejar la vista
+                window.location.href = "{{ url('/') }}";
+            });*/
+            navLogout.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Preparem la petició asíncrona local per buidar la sessió de PHP
+                const xhrLocal = new XMLHttpRequest();
+                xhrLocal.open('POST', "{{ route('orders.clearSession') }}", true);
+                xhrLocal.setRequestHeader('Content-Type', 'application/json');
+                // Injectem el token CSRF de seguretat de forma directa amb Blade
+                xhrLocal.setRequestHeader('X-CSRF-TOKEN', "{{ csrf_token() }}");
+
+                xhrLocal.onreadystatechange = function () {
+                    if (xhrLocal.readyState === 4) {
+                        // Un cop la sessió de PHP està buida, netegem el navegador i expulsem
+                        sessionStorage.removeItem('access_token');
+                        window.location.href = "{{ url('/') }}";
+                    }
+                };
+                xhrLocal.send(); // Enviem la petició de neteja de fons
+            });
+
         });
     </script>
 </body>
