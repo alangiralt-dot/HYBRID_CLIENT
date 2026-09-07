@@ -20,10 +20,11 @@ Route::get('/login', function () {
 })->name('login');
 Route::post('/orders/clear-session', [OrderController::class, 'clearCartSession'])->name('orders.clearSession');
 
+Route::post('/orders/confirm', [OrderController::class, 'confirmOrder'])->name('orders.confirm');
+
 // rutes només accessibles amb una sessió d'usuari
 Route::middleware(['auth'])->group(function () {
     Route::get('/comandes/{id}', [OrderController::class, 'showOrderDetails'])->name('orders.showOrderDetails');
-    Route::post('/orders/confirm', [OrderController::class, 'confirmOrder'])->name('orders.confirm');
 });
 
 // Les rutes fixes han d'anar a dalt i la dinàmica a baix del tot.

@@ -15,10 +15,7 @@ class OrderController extends Controller
     public function clearCartSession(Request $request)
     {
         // Esborrem en bloc les dues claus identificades al depurador
-        $request->session()->forget([
-            'current_order',
-            'request_preview_data'
-        ]);
+        $request->session()->forget('current_order');
 
         // Responem de forma asíncrona amb un codi d'èxit 200 OK
         return response()->json([
@@ -137,10 +134,7 @@ class OrderController extends Controller
                 ]);                
             }
 
-            //$apiData = $response->json();
             $apiData = $response->object();
-
-            $request->session()->put('request_preview_data', $apiData);
 
             return view('invoice', [
                 'products'      => $apiData->order_lines,
@@ -153,24 +147,70 @@ class OrderController extends Controller
                 'total'         => $apiData->total,
                 'error_message' => ""
             ]);
-            /*return view('invoice', [
-                'products'      => $products,
-                'isCurrent' => true,
-                'quantities'    => $currentOrder,
-                'code'          => '-',
-                'status'        => 'En curs',
-                'date'          => $date,
-                'taxableBasis'  => $taxableBasis,
-                'tax'           => $tax,
-                'total'         => $total,
-                'orderAvailability'      => $orderAvailability, // es pot eliminar
-                'conflicting_references' => $conflicting_references
-            ]);*/
-
         }
     }
-
+    
     public function confirmOrder(Request $request)
+    {
+        // 1. Recollim el token enviat des de l'input ocult del formulari
+        $accessToken = $request->input('access_token');
+        
+        // 2. Obtenim la comanda actual guardada a la sessió local de PHP
+        $currentOrder = $request->session()->get('current_order', []);
+
+        // 3. Transformem l'array de la sessió al format JSON net de "order_lines" que demana l'API
+        $orderLines = [];
+        foreach ($currentOrder as $productId => $item) {
+            $orderLines[] = [
+                'id'       => (int) $productId,
+                'quantity' => (int) $item['quantity']
+            ];
+        }
+
+        // 4. Preparem l'URL base del teu backend central des de la configuració
+        $apiBase = config('services.api_serra.url');
+
+        // 5. Fem la petició POST cap a l'endpoint de l'API injectant el Bearer Token a la capçalera
+        $response = Http::withToken($accessToken)
+            ->post("{$apiBase}/api/orders", [
+                'order_lines' => $orderLines
+            ]);
+
+        // 6. Si l'API respon amb un error (per token invàlid, falta de dades, etc.)
+        if ($response->failed()) {
+            return view('invoice', [
+                'products' => [],
+                'isCurrent' => true,
+                'code' => '-',
+                'status' => 'En curs',
+                'date' => now()->format('d/m/Y H:i'),
+                'taxable_basis' => 0.00,
+                'tax' => 0.00,
+                'total' => 0.00,
+                'error_message' => $response->json('message') ?? 'Error amb el servidor central.'
+            ]);                
+        }
+
+        // 7. S'HA CREAT AMB ÈXIT: Buidem completament la sessió del carretó local del client
+        $request->session()->forget('current_order');
+
+        // 8. Redirigim finalment l'usuari cap al llistat de les seves comandes confirmades
+        // Més endavant faré return redirect()->route('orders.showOrders');
+        return view('invoice', [
+                'products' => [],
+                'isCurrent' => true,
+                'code' => '-',
+                'status' => 'En curs',
+                'date' => now()->format('d/m/Y H:i'),
+                'taxable_basis' => 0.00,
+                'tax' => 0.00,
+                'total' => 0.00,
+                'error_message' => "S'ha creat la comanda amb id " . $response->json('order_id') . " en la base de dades de l'API."
+            ]);
+    }
+
+
+    /*public function confirmOrder(Request $request)
     {
         $currentOrder      = $request->session()->get('current_order', []);
         $orderAvailability = $request->session()->get('order_availability', '-');
@@ -205,5 +245,5 @@ class OrderController extends Controller
         $request->session()->forget(['current_order', 'order_availability', 'current_amount', 'current_date']);
 
         return redirect()->route('orders.showOrders');
-    }
+    }*/
 }

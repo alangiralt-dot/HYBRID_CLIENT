@@ -2,8 +2,9 @@
 
 @section('confirm_order')
     @if($isCurrent && !empty($products))
-        <form action="{{ route('orders.confirm') }}" method="POST" class="px-2 border-[#bed1dc]">
+        <form id="confirmOrderForm" action="{{ route('orders.confirm') }}" method="POST" class="px-2 border-[#bed1dc]">
             @csrf
+            <input type="hidden" name="access_token" id="accessTokenInput" value="">
             <button type="submit" class="bg-[#fffacd] hover:bg-[#fff27e] border border-[#bed1dc] px-4 py-2 rounded-xl text-xs text-black font-medium tracking-wider uppercase shadow-sm transition">
                 Confirmar Comanda
             </button>
@@ -24,7 +25,7 @@
                 </svg>
             </div>
             <div>
-                <h4 class="text-sm font-medium text-red-800">Atenció: Referències no disponibles</h4>
+                <h4 class="text-sm font-medium text-red-800">Avís del sistema</h4>
                 <p class="text-xs text-red-700 mt-1 font-normal">
                     {{ $error_message }} 
                 </p>
@@ -152,6 +153,18 @@
     </div>
 </div>
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const confirmForm = document.getElementById('confirmOrderForm');
+        const tokenInput = document.getElementById('accessTokenInput'); // Nom unificat
+
+        if (confirmForm && tokenInput) {
+            confirmForm.addEventListener('submit', function(e) {
+                // Llegim el token de la memòria del navegador i l'injectem directament
+                tokenInput.value = sessionStorage.getItem('access_token');
+            });
+        }
+    });
+
     function updateInvoiceSession(productId, step, currentValue) {
         const currentVal = parseInt(currentValue) || 0;
         

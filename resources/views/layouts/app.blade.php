@@ -32,9 +32,7 @@
                 <h1 class="font-semibold text-[#0f172a] text-base">@yield('tab_name', 'Dashboard')</h1>
             </div>
             <div class="flex items-center px-2">
-                @auth
                 @yield('confirm_order')
-                @endauth
                 <a href="{{ route('orders.showOrderDetails', 'current') }}"
                    class="p-1 bg-transparent text-gray-400 hover:text-red-600 transition" 
                 >
