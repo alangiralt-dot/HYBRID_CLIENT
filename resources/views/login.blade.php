@@ -12,15 +12,12 @@
             </div>
             <div class="col-span-12">
                 <label class="pl-4 block text-[13px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Correu electrònic</label>
-                <!--<input type="email" name="email" id="emailInput" value="" required class="w-full px-4 py-2.5 bg-gray-50 border @error('email') border-red-500 @else border-gray-200 @enderror rounded-xl text-sm focus:outline-none focus:border-[#bed1dc] transition"
-                >-->
-                <input type="email" name="email" id="emailInput" value="" required class="w-full px-4 py-2.5 bg-gray-50 border @error('email') border-red-500 @else border-gray-200 @enderror rounded-xl text-sm focus:outline-none focus:border-[#bed1dc] transition"
+                <input type="email" name="email" id="emailInput" value="" required class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#bed1dc] transition"
                 >
             </div>
 
             <div class="col-span-12">
                 <label class="pl-4 block text-[13px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Contrasenya</label>
-                <!--<input type="password" name="password" value="" required class="w-full px-4 py-2.5 bg-gray-50 border @error('password') border-red-500 @else border-gray-200 @enderror rounded-xl text-sm focus:outline-none focus:border-[#bed1dc] transition">-->
                 <input type="password" name="password" id="passwordInput" value="" required class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#bed1dc] transition">
             </div>
          </div>
@@ -45,8 +42,8 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
 
     // Netejem possibles estats d'error anteriors
     loginError.classList.add('hidden');
-    emailInput.classList.remove('border-red-500');
-    passwordInput.classList.remove('border-red-500');
+    emailInput.classList.replace('border-red-500', 'border-gray-200');
+    passwordInput.classList.replace('border-red-500', 'border-gray-200');
 
     // Preparem la petició asíncrona com al selector de quantitats
     const xhr = new XMLHttpRequest();
@@ -82,8 +79,8 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
                 // Si la petició falla (credencials incorrectes, 401, etc.)
                 loginError.textContent = 'El correu electrònic o la contrasenya no són correctes.';
                 loginError.classList.remove('hidden');
-                emailInput.classList.add('border-red-500');
-                passwordInput.classList.add('border-red-500');
+                emailInput.classList.replace('border-gray-200', 'border-red-500');
+                passwordInput.classList.replace('border-gray-200', 'border-red-500');
             }
         }
     };

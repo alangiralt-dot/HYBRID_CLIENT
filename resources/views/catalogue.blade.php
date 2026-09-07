@@ -102,7 +102,7 @@
 
         // 3. Preparem la petició asíncrona amb XMLHttpRequest
         const xhr = new XMLHttpRequest();
-        xhr.open('POST', "{{ url('/orders/add') }}", true);
+        xhr.open('POST', "{{ route('orders.updateQuantity') }}", true);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
 
