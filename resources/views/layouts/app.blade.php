@@ -114,12 +114,18 @@
                             Fusta vella i envellida
                         </a>
                     </div>
-                    @auth
-                    <a href="{{ url('/comandes') }}" class="flex items-center space-x-3 px-3 py-2.5 text-sm rounded-xl transition font-medium {{ request()->is('comandes*') ? 'text-gray-900 bg-gray-50' : 'text-gray-700 bg-white hover:bg-gray-50' }}">
-                        <svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
-                        <span>Comandes</span>
-                    </a>
-                    @endauth
+
+                    <form id="navComandes" action="{{ url('/comandes') }}" method="POST" class="hidden">
+                        @csrf
+                        <input type="hidden" name="access_token" id="tokenComandesInput" value="">
+                        
+                        <button type="submit" class="w-full flex items-center space-x-3 px-3 py-2.5 text-sm rounded-xl transition font-medium {{ request()->is('comandes*') ? 'text-gray-900 bg-gray-50' : 'text-gray-700 bg-white hover:bg-gray-50' }}">
+                            <svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+                            </svg>
+                            <span>Comandes</span>
+                        </button>
+                    </form>
                 </nav>
 
 
@@ -141,6 +147,7 @@
                     </svg>
                     <span>Login</span>
                 </a>
+                
             </div>
         </aside>
         <main class="flex-1 overflow-y-auto p-8 bg-[#f8fafc]">
@@ -155,6 +162,7 @@
             // Timber category toggle (Level 1 to Level 2)
             const timberBtn = document.getElementById('timber-btn');
             const timberMenu = document.getElementById('timber-menu');
+            const navComandes = document.getElementById('navComandes');
             
             // Exterior timber subcategory toggle (Level 2 to Level 3)
             const exteriorBtn = document.getElementById('exterior-btn');
@@ -184,12 +192,19 @@
             if (token) {
                 navLogout.classList.remove('hidden'); // Mostrem Logout si està loguejat
                 navElMeuEspai.classList.remove('hidden');
+                navComandes.classList.remove('hidden');
                 navLogin.classList.add('hidden');
+                navComandes.addEventListener('submit', function() {
+                    document.getElementById('tokenComandesInput').value = sessionStorage.getItem('access_token');
+                });
+
             } else {
-                navLogin.classList.remove('hidden');  // Mostrem Login si és un convidat
                 navLogout.classList.add('hidden');
                 navElMeuEspai.classList.add('hidden');
+                navComandes.classList.add('hidden');
+                navLogin.classList.remove('hidden');  // Mostrem Login si és un convidat
             }
+
             // 3. ACCIÓ ASÍNCRONA DE LOGOUT
             // Comportament del clic del botó de Logout asíncron
             navLogout.addEventListener('click', function(e) {

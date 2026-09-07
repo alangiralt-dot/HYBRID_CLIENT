@@ -21,6 +21,7 @@ Route::get('/login', function () {
 Route::post('/orders/clear-session', [OrderController::class, 'clearCartSession'])->name('orders.clearSession');
 
 Route::post('/orders/confirm', [OrderController::class, 'confirmOrder'])->name('orders.confirm');
+Route::post('/comandes', [OrderController::class, 'showOrders'])->name('orders.showOrders');
 
 // rutes només accessibles amb una sessió d'usuari
 Route::middleware(['auth'])->group(function () {
