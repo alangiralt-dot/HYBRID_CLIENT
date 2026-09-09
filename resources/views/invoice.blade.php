@@ -2,13 +2,10 @@
 
 @section('confirm_order')
     @if($isCurrent && !empty($products))
-        <form id="confirmOrderForm" action="{{ route('orders.confirm') }}" method="POST" class="px-2 border-[#bed1dc]">
-            @csrf
-            <input type="hidden" name="access_token" id="accessTokenInput" value="">
-            <button type="submit" class="bg-[#fffacd] hover:bg-[#fff27e] border border-[#bed1dc] px-4 py-2 rounded-xl text-xs text-black font-medium tracking-wider uppercase shadow-sm transition">
-                Confirmar Comanda
-            </button>
-        </form>
+        <button type="button" id="btn-confirm-order" class="hidden bg-[#fffacd] hover:bg-[#fff27e] border border-[#bed1dc] px-4 py-2 
+                rounded-xl text-xs text-black font-medium tracking-wider uppercase shadow-sm transition">
+            Confirmar Comanda
+        </button>
     @endif
 @endsection
 
