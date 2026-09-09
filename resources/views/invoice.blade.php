@@ -150,16 +150,11 @@
     </div>
 </div>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const confirmForm = document.getElementById('confirmOrderForm');
-        const tokenInput = document.getElementById('accessTokenInput'); // Nom unificat
+    document.addEventListener('DOMContentLoaded', function () {
+        const btnConfirmOrder = document.getElementById('btn-confirm-order');
+        const token = sessionStorage.getItem('access_token');
 
-        if (confirmForm && tokenInput) {
-            confirmForm.addEventListener('submit', function(e) {
-                // Llegim el token de la memòria del navegador i l'injectem directament
-                tokenInput.value = sessionStorage.getItem('access_token');
-            });
-        }
+        if (token && btnConfirmOrder) btnConfirmOrder.classList.remove('hidden');
     });
 
     function updateInvoiceSession(productId, step, currentValue) {
