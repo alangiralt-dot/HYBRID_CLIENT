@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 use App\Http\Controllers\CatalogueController;
 use App\Http\Controllers\OrderController;
 
@@ -8,8 +9,8 @@ use App\Http\Controllers\OrderController;
 Route::get('/', function () {
     return redirect()->route('orders.showOrderDetails.current');
 });
-Route::get('/comandes/current', function (\Illuminate\Http\Request $request) {
-    return (new \App\Http\Controllers\OrderController())->showOrderDetails($request, 'current');
+Route::get('/comandes/current', function (Request $request) {
+    return (new OrderController())->showOrderDetails($request, 'current');
 })->name('orders.showOrderDetails.current');
 
 Route::post('/orders/update-quantity', [OrderController::class, 'updateQuantityInCurrentOrder'])->name('orders.updateQuantity');
