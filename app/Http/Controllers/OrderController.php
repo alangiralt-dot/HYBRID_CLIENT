@@ -74,47 +74,10 @@ class OrderController extends Controller
         ], 200);
     }
 
-    public function showOrders(Request $request)
+    public function showOrders()
     {
-        // 1. Recollim el token d'accés que ve des de la petició de l'usuari
-        $accessToken = $request->input('access_token');
-
-        // 2. Preparem l'URL base del teu backend central des de la configuració
-        $apiBase = config('services.api_serra.url');
-
-        // 3. Fem la petició GET cap a l'endpoint de l'API injectant el Bearer Token a la capçalera
-        $response = Http::withToken($accessToken)
-            ->get("{$apiBase}/api/orders");
-
-        // 4. Si l'API respon amb un error, enviem un array buit i capturem el missatge
-        if ($response->failed()) {
-            return view('orders', [
-                'confirmedOrders' => [],
-                'error_message'   => $response->json('message') ?? 'Error al carregar l\'historial del servidor central.'
-            ]);
-        }
-
-        // 5. Transformem el JSON rebut de l'API en una col·lecció d'objectes estàndard de PHP
-        $confirmedOrders = $response->object();
-
-        // 6. Retornem la vista enviant la llista d'objectes llesta per al @foreach
-        return view('orders', [
-            'confirmedOrders' => $confirmedOrders
-        ]);
+        return view('orders');
     }
-
-    /*public function showOrders(Request $request)
-    {
-        $customerId = \Illuminate\Support\Facades\Auth::user()->customer_id;
-        $confirmedOrders = Order::with('status') 
-            ->where('customer_id', $customerId)
-            ->orderBy('date', 'desc')
-            ->get();
-
-        return view('orders', [
-            'confirmedOrders' => $confirmedOrders
-        ]);
-    }*/
 
     public function showOrderDetails(Request $request, $id)
     {
