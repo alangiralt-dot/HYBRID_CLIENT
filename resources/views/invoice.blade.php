@@ -104,7 +104,7 @@
 
                 </div>
             @empty
-                <div class="py-12 text-center text-gray-400 font-normal">
+                <div id="empty-cart-message" class="py-12 text-center text-gray-400 font-normal">
                     No hi ha cap producte carregat en aquesta comanda.
                 </div>
             @endforelse
@@ -155,6 +155,20 @@
         const token = sessionStorage.getItem('access_token');
 
         if (token && btnConfirmOrder) btnConfirmOrder.classList.remove('hidden');
+
+        const alternativeMessages = [
+            "Aquest carretó buit fa un xic de pena. Dóna-li una mica de vida!",
+            "De mica en mica s'omple la pica, i de gota en gota s'omple la bóta.",
+            "Aquest carretó és tan buit com un taller un divendres a la tarda!",
+            "Amb el carretó buit no es pot fer feina.",
+            "Aquest carretó no pesa gaire, oi?"
+        ];
+
+        const randomIndex = Math.floor(Math.random() * alternativeMessages.length);
+        const chosenMessage = alternativeMessages[randomIndex];
+
+        const emptyCartMessage = document.getElementById('empty-cart-message');
+        if (emptyCartMessage) emptyCartMessage.textContent = chosenMessage;
     });
 
     function updateInvoiceSession(productId, step, currentValue) {
