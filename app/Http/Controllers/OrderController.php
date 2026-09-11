@@ -81,9 +81,10 @@ class OrderController extends Controller
 
     public function showOrderDetails(Request $request, $id)
     {
+        $date = now()->format('d/m/Y H:i');
+
         if ($id === 'current') {
             $currentOrder = $request->session()->get('current_order', []);
-            $date = now()->format('d/m/Y H:i');
 
             if (empty($currentOrder)) {
                 return view('invoice', [
@@ -96,7 +97,8 @@ class OrderController extends Controller
                     'tax' => 0.00,
                     'total' => 0.00,
                     'error_message' => "",
-                    'transformed_items' => []
+                    'transformed_items' => [],
+                    'id' => $id 
                 ]);
             }
 
@@ -124,7 +126,8 @@ class OrderController extends Controller
                     'tax' => 0.00,
                     'total' => 0.00,
                     'error_message' => $response->json('message'),
-                    'transformed_items' => []
+                    'transformed_items' => [],
+                    'id' => $id 
                 ]);                
             }
 
@@ -140,9 +143,23 @@ class OrderController extends Controller
                 'tax'           => $apiData->tax,
                 'total'         => $apiData->total,
                 'error_message' => "",
-                'transformed_items' => $transformedItems
+                'transformed_items' => $transformedItems,
+                'id' => $id 
             ]);
         }
+        return view('invoice', [
+            'products' => [],
+            'isCurrent' => false,
+            'code' => '-',
+            'status' => 'En curs',
+            'date' => $date,
+            'taxable_basis' => 0.00,
+            'tax' => 0.00,
+            'total' => 0.00,
+            'error_message' => "",
+            'transformed_items' => [],
+            'id' => $id
+        ]);
     }
     
     public function confirmOrder(Request $request)
