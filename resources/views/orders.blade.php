@@ -57,19 +57,14 @@
 
     async function fetchAndRenderOrders() {
         const ordersContainer = document.getElementById('orders-list');
-        const errorBanner     = document.getElementById('error-banner');
-        const errorMessage   = document.getElementById('error-message');
-
         if (!ordersContainer) return;
 
         const token = sessionStorage.getItem('access_token');
-
         if (!token) {
-            errorMessage.textContent = "Sessió no vàlida o expirada. Si us plau, torna a iniciar sessió per consultar les teves comandes.";
-            errorBanner.classList.remove('hidden');
+            showSystemAlert("Sessió no vàlida o expirada. Si us plau, torna a iniciar sessió per consultar les teves comandes.");
             return;
         }
-
+        
         const apiUrl = `${API_SERRA_BASE_URL}/api/orders`;
         const response = await fetch(apiUrl, {
             method: 'GET',
@@ -83,20 +78,19 @@
         if (!response.ok) {
             try {
                 const errorData = await response.json();
-                if (errorData && errorData.message) throw new Error(`${response.status} ${errorData.message}`);
-            } catch (parseError) {
-                throw new Error(`${response.status} ${parseError.message}`);
+                showSystemAlert(errorData.message || response.status);
+                return;
+            } catch (error) {
+                showSystemAlert(error.message);
+                return;
             }
-
-            throw new Error(response.status);
         }
 
         const confirmedOrders = await response.json();
-
         if (confirmedOrders.length === 0) {
             ordersContainer.innerHTML = `
                 <div class="text-center py-8 text-gray-500 font-normal text-[13px]">
-                    Encara no has realitzat cap comanda a la serradora.
+                    Encara no has confirmat cap comanda.
                 </div>
             `;
             return;
@@ -131,8 +125,8 @@
             ordersContainer.appendChild(mainFragment);
 
         } catch (error) {
-            errorMessage.textContent = error.message || "Omplint la taula, s'ha produït un error.";
-            errorBanner.classList.remove('hidden');
+            showSystemAlert(error.message);
+            return;
         }
     }
 </script>
