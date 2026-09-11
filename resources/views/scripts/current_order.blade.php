@@ -6,8 +6,8 @@
         if (emptyCartMessage) {
             const alternativeMessages = [
                 "Aquest carretó buit fa un xic de pena. Dóna-li una mica de vida!",
-                "De mica en mica s'omple la pica. Ara bé, aquesta és ben eixuta encara.",
-                "Aquest carretó és tan buit com un taller un divendres a la tarda!",
+                "De mica en mica s'omple la pica.",
+                "Això sembla un taller un divendres a la tarda!",
                 "Amb el carretó buit no es pot fer feina.",
                 "Aquest carretó no pesa gaire, oi?"
             ];
