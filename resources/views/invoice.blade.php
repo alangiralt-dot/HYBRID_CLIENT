@@ -144,10 +144,14 @@
     </div>
 </div>
 
-@if($isCurrent)
-    @include('scripts.current_order')
-@else
-    @include('scripts.confirmed_order')
-@endif
+@if(!$isCurrent) @include('templates.confirmed_order') @endif
 
+@endsection
+
+@section('scripts')
+    @if($isCurrent)
+        @include('scripts.current_order')
+    @else
+        @include('scripts.confirmed_order')
+    @endif
 @endsection
