@@ -223,6 +223,18 @@
             });
 
         });
+        
+        function showSystemAlert(message) {
+            const errorBanner = document.getElementById('error-banner');
+            const errorMessage = document.getElementById('error-message');
+
+            if (errorBanner && errorMessage) {
+                errorMessage.textContent = message || "S'ha produït un error inesperat.";
+                errorBanner.classList.remove('hidden');
+
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
     </script>
 
     @yield('scripts')

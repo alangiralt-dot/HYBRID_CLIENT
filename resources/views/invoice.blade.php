@@ -2,13 +2,10 @@
 
 @section('confirm_order')
     @if($isCurrent && !empty($products))
-        <form id="confirmOrderForm" action="{{ route('orders.confirm') }}" method="POST" class="px-2 border-[#bed1dc]">
-            @csrf
-            <input type="hidden" name="access_token" id="accessTokenInput" value="">
-            <button type="submit" class="bg-[#fffacd] hover:bg-[#fff27e] border border-[#bed1dc] px-4 py-2 rounded-xl text-xs text-black font-medium tracking-wider uppercase shadow-sm transition">
-                Confirmar Comanda
-            </button>
-        </form>
+        <button type="button" id="btn-confirm-order" class="hidden bg-[#fffacd] hover:bg-[#fff27e] border border-[#bed1dc] px-4 py-2 
+                rounded-xl text-xs text-black font-medium tracking-wider uppercase shadow-sm transition">
+            Confirmar Comanda
+        </button>
     @endif
 @endsection
 
@@ -16,22 +13,17 @@
 
 @section('content')
 <div class="space-y-6">
-
-    @if(!empty($error_message))
-        <div class="bg-red-50 border border-red-200 rounded-2xl p-4 flex items-start gap-3">
-            <div class="text-red-500 mt-0.5">
-                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                </svg>
-            </div>
-            <div>
-                <h4 class="text-sm font-medium text-red-800">Avís del sistema</h4>
-                <p class="text-xs text-red-700 mt-1 font-normal">
-                    {{ $error_message }} 
-                </p>
-            </div>
+    <div id="error-banner" class="{{ !empty($error_message) ? '' : 'hidden' }} bg-red-50 border border-red-200 rounded-2xl p-4 flex items-start gap-3">
+        <div class="text-red-500 mt-0.5">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
         </div>
-    @endif
+        <div>
+            <h4 class="text-sm font-medium text-red-800">Avís del sistema</h4>
+            <p id="error-message" class="text-xs text-red-700 mt-1 font-normal">{{ !empty($error_message) ? $error_message : '' }}</p>
+        </div>
+    </div>
 
     <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden p-6 space-y-4">
         
@@ -107,7 +99,7 @@
 
                 </div>
             @empty
-                <div class="py-12 text-center text-gray-400 font-normal">
+                <div id="empty-cart-message" class="py-12 text-center text-gray-400 font-normal">
                     No hi ha cap producte carregat en aquesta comanda.
                 </div>
             @endforelse
@@ -153,16 +145,69 @@
     </div>
 </div>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const confirmForm = document.getElementById('confirmOrderForm');
-        const tokenInput = document.getElementById('accessTokenInput'); // Nom unificat
-
-        if (confirmForm && tokenInput) {
-            confirmForm.addEventListener('submit', function(e) {
-                // Llegim el token de la memòria del navegador i l'injectem directament
-                tokenInput.value = sessionStorage.getItem('access_token');
-            });
+    const orderLines = @json($transformed_items);
+    
+    document.addEventListener('DOMContentLoaded', function () {
+        const emptyCartMessage = document.getElementById('empty-cart-message');
+        if (emptyCartMessage) {
+            const alternativeMessages = [
+                "Aquest carretó buit fa un xic de pena. Dóna-li una mica de vida!",
+                "De mica en mica s'omple la pica. Ara bé, aquesta és ben eixuta encara.",
+                "Aquest carretó és tan buit com un taller un divendres a la tarda!",
+                "Amb el carretó buit no es pot fer feina.",
+                "Aquest carretó no pesa gaire, oi?"
+            ];
+            const randomIndex = Math.floor(Math.random() * alternativeMessages.length);
+            emptyCartMessage.textContent = alternativeMessages[randomIndex];
         }
+        
+        const btnConfirmOrder = document.getElementById('btn-confirm-order');
+        const token = sessionStorage.getItem('access_token');
+        if (token && btnConfirmOrder) {
+            btnConfirmOrder.classList.remove('hidden');
+        } else {
+            return
+        }
+
+        btnConfirmOrder.addEventListener('click', async function () {
+            // 1. Evitem que es cliqui dues vegades seguides desactivant el botó
+            btnConfirmOrder.disabled = true;
+            btnConfirmOrder.textContent = "PROCESSANT...";
+
+            try {
+                // 2. Llançem la petició POST asíncrona directa a l'API central
+                const apiBase = "{{ config('services.api_serra.url') }}";
+                const response = await fetch(`${apiBase}/api/orders`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        "order_lines": orderLines
+                    })
+                });
+
+                const data = await response.json();
+
+                // 3. Punt 12 i 13 del teu full de ruta: si l'API respon amb èxit, fem el PRG del client
+                if (response.ok && data.status === 'success') {
+                    // Forçem la redirecció GET neta cap al llistat del servidor client
+                    window.location.href = "{{ route('orders.showOrders') }}";
+                } else {
+                    // alert(data.message || "Error en processar la comanda amb la serradora central.");
+                    showSystemAlert(data.message);
+                    btnConfirmOrder.disabled = false;
+                    btnConfirmOrder.textContent = "CONFIRMAR COMANDA";
+                }
+
+            } catch (error) {
+                showSystemAlert(error.message);
+                btnConfirmOrder.disabled = false;
+                btnConfirmOrder.textContent = "CONFIRMAR COMANDA";
+            }
+        });
     });
 
     function updateInvoiceSession(productId, step, currentValue) {

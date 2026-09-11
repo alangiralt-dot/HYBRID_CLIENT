@@ -95,7 +95,8 @@ class OrderController extends Controller
                     'taxable_basis' => 0.00,
                     'tax' => 0.00,
                     'total' => 0.00,
-                    'error_message' => ""
+                    'error_message' => "",
+                    'transformed_items' => []
                 ]);
             }
 
@@ -122,7 +123,8 @@ class OrderController extends Controller
                     'taxable_basis' => 0.00,
                     'tax' => 0.00,
                     'total' => 0.00,
-                    'error_message' => $response->json('message')
+                    'error_message' => $response->json('message'),
+                    'transformed_items' => []
                 ]);                
             }
 
@@ -137,7 +139,8 @@ class OrderController extends Controller
                 'taxable_basis'  => $apiData->taxable_basis,
                 'tax'           => $apiData->tax,
                 'total'         => $apiData->total,
-                'error_message' => ""
+                'error_message' => "",
+                'transformed_items' => $transformedItems
             ]);
         }
     }
