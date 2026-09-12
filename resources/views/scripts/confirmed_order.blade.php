@@ -79,7 +79,8 @@
 
                 // Formatem els preus a l'estil català (1.234,56 €)
                 const formattedPrice = line.sale_unit_price.toLocaleString('ca-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                clone.querySelector('.line-unit-price').textContent = `${formattedPrice} €`;
+                clone.querySelector('.line-unit-price').textContent = `${formattedPrice} ${line.unit}`;
+
 
                 const formattedSubtotal = line.subtotal.toLocaleString('ca-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                 clone.querySelector('.line-subtotal').textContent = `${formattedSubtotal} €`;
