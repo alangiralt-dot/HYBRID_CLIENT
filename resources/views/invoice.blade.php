@@ -34,7 +34,7 @@
             <div class="col-span-2 text-right">Subtotal</div>
         </div>
 
-        <div class="divide-y divide-[#bed1dc] !mt-0">
+        <div id="confirmed-order-lines" class="divide-y divide-[#bed1dc] !mt-0">
             @forelse($products as $product)
                 <div class="py-3 font-normal text-black text-[13px] transition hover:bg-gray-50 px-2 space-y-1">
                     
@@ -100,7 +100,6 @@
                 </div>
             @empty
                 <div id="empty-cart-message" class="py-12 text-center text-gray-400 font-normal">
-                    No hi ha cap producte carregat en aquesta comanda.
                 </div>
             @endforelse
         </div>
@@ -114,145 +113,45 @@
                 {{-- Tres files de traçabilitat inferiors alineades amb el bloc comptable --}}
                 <div class="flex justify-between text-black">
                     <span class="font-semibold text-gray-500 uppercase tracking-wider">Codi</span>
-                    <span class="font-normal text-black tracking-wide">{{ $code }}</span>
+                    <span id="general-code" class="font-normal text-black tracking-wide">{{ $code }}</span>
                 </div>
                 <div class="flex justify-between text-black">
                     <span class="font-semibold text-gray-500 uppercase tracking-wider">Estat</span>
-                    <span class="font-normal text-black">{{ $status }}</span>
+                    <span id="general-status" class="font-normal text-black">{{ $status }}</span>
                 </div>
                 <div class="flex justify-between text-black">
                     <span class="font-semibold text-gray-500 uppercase tracking-wider">Data</span>
-                    <span class="font-normal text-black tracking-wide">{{ $date }}</span>
+                    <span id="general-date" class="font-normal text-black tracking-wide">{{ $date }}</span>
                 </div>
             </div>
             <div class="col-span-4 space-y-2 text-[13px] font-normal"></div>
             <div class="col-span-4 space-y-2 text-[13px] font-normal">
                 <div class="flex justify-between text-black">
                     <span class="uppercase">Base Imposable</span>
-                    <span class="font-bold text-black tracking-wide">{{ number_format($taxable_basis, 2, ',', '.') }} €</span>
+                    <span id="general-taxable-basis" class="font-bold text-black tracking-wide">{{ number_format($taxable_basis, 2, ',', '.') }} €</span>
                 </div>
                 <div class="flex justify-between text-black">
                     <span>IVA (21%)</span>
-                    <span class="font-bold text-black tracking-wide">{{ number_format($tax, 2, ',', '.') }} €</span>
+                    <span id="general-tax" class="font-bold text-black tracking-wide">{{ number_format($tax, 2, ',', '.') }} €</span>
                 </div>
                 <div class="flex justify-between text-black">
                     <span>TOTAL</span>
-                    <span class="font-bold text-black tracking-wide">{{ number_format($total, 2, ',', '.') }} €</span>
+                    <span id="general-total" class="font-bold text-black tracking-wide">{{ number_format($total, 2, ',', '.') }} €</span>
                 </div>
             </div>
         </div>
 
     </div>
 </div>
-<script>
-    const orderLines = @json($transformed_items);
-    
-    document.addEventListener('DOMContentLoaded', function () {
-        const emptyCartMessage = document.getElementById('empty-cart-message');
-        if (emptyCartMessage) {
-            const alternativeMessages = [
-                "Aquest carretó buit fa un xic de pena. Dóna-li una mica de vida!",
-                "De mica en mica s'omple la pica. Ara bé, aquesta és ben eixuta encara.",
-                "Aquest carretó és tan buit com un taller un divendres a la tarda!",
-                "Amb el carretó buit no es pot fer feina.",
-                "Aquest carretó no pesa gaire, oi?"
-            ];
-            const randomIndex = Math.floor(Math.random() * alternativeMessages.length);
-            emptyCartMessage.textContent = alternativeMessages[randomIndex];
-        }
-        
-        const btnConfirmOrder = document.getElementById('btn-confirm-order');
-        const token = sessionStorage.getItem('access_token');
-        if (token && btnConfirmOrder) {
-            btnConfirmOrder.classList.remove('hidden');
-        } else {
-            return
-        }
 
-        btnConfirmOrder.addEventListener('click', async function () {
-            // 1. Evitem que es cliqui dues vegades seguides desactivant el botó
-            btnConfirmOrder.disabled = true;
-            btnConfirmOrder.textContent = "PROCESSANT...";
+@if(!$isCurrent) @include('templates.confirmed_order') @endif
 
-            try {
-                // 2. Llançem la petició POST asíncrona directa a l'API central
-                const apiBase = "{{ config('services.api_serra.url') }}";
-                const response = await fetch(`${apiBase}/api/orders`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({
-                        "order_lines": orderLines
-                    })
-                });
+@endsection
 
-                const data = await response.json();
-
-                // 3. Punt 12 i 13 del teu full de ruta: si l'API respon amb èxit, fem el PRG del client
-                if (response.ok && data.status === 'success') {
-                    // Forçem la redirecció GET neta cap al llistat del servidor client
-                    window.location.href = "{{ route('orders.showOrders') }}";
-                } else {
-                    // alert(data.message || "Error en processar la comanda amb la serradora central.");
-                    showSystemAlert(data.message);
-                    btnConfirmOrder.disabled = false;
-                    btnConfirmOrder.textContent = "CONFIRMAR COMANDA";
-                }
-
-            } catch (error) {
-                showSystemAlert(error.message);
-                btnConfirmOrder.disabled = false;
-                btnConfirmOrder.textContent = "CONFIRMAR COMANDA";
-            }
-        });
-    });
-
-    function updateInvoiceSession(productId, step, currentValue) {
-        const currentVal = parseInt(currentValue) || 0;
-        
-        // Protecció local: Si l'usuari intenta restar i ja som al mínim (el pack), bloquegem la petició asíncrona
-        if (step < 0 && currentVal <= Math.abs(step)) {
-            return; 
-        }
-
-        // 1. Injectem el token CSRF de validació de Laravel
-        const csrfToken = "{{ csrf_token() }}";
-
-        // 2. Preparem la petició POST cap a la teva ruta oficial d'afegir
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', "{{ route('orders.updateQuantity') }}", true);
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
-
-        // 3. Un cop la sessió s'ha modificat amb èxit pel controlador, recarreguem la URL
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                window.location.href = "{{ url('/comandes/current') }}";
-            }
-        };
-
-        // 4. ENVIEM EL STEP DIRECTAMENT: Laravel farà el `+= $step` exacte a la sessió
-        xhr.send(`product_id=${productId}&quantity=${step}`);
-    }
-    function removeInvoiceItem(productId) {
-        const csrfToken = "{{ csrf_token() }}";
-
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', "{{ route('orders.remove') }}", true);
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
-
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                // Quan la sessió s'ha buidat, cridem immediatament la URL comandes/current
-                window.location.href = "{{ url('/comandes/current') }}";
-            }
-        };
-
-        xhr.send(`product_id=${productId}`);
-    }
-</script>
+@section('scripts')
+    @if($isCurrent)
+        @include('scripts.current_order')
+    @else
+        @include('scripts.confirmed_order')
+    @endif
 @endsection
