@@ -126,7 +126,7 @@
 
             </div>
             <div class="border-t border-[#bed1dc] pt-5 space-y-1.5">
-                <a href="{{-- url('/el-meu-perfil') --}}" class="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-xl transition {{ request()->is('el-meu-perfil') ? 'text-gray-900 bg-gray-50' : 'text-gray-700 bg-white hover:bg-gray-50' }}">
+                <a href="{{ url('/el-meu-perfil') }}" class="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-xl transition {{ request()->is('el-meu-perfil') ? 'text-gray-900 bg-gray-50' : 'text-gray-700 bg-white hover:bg-gray-50' }}">
                     <svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                     <span>El meu perfil</span>
                 </a>
