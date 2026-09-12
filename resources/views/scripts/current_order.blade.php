@@ -5,7 +5,7 @@
         const emptyCartMessage = document.getElementById('empty-cart-message');
         if (emptyCartMessage) {
             const alternativeMessages = [
-                "Aquest carretó buit fa un xic de pena. Dóna-li una mica de vida!",
+                "Aquest carretó buit fa un xic de pena.",
                 "De mica en mica s'omple la pica.",
                 "Això sembla un taller un divendres a la tarda!",
                 "Amb el carretó buit no es pot fer feina.",
