@@ -34,7 +34,7 @@
             <div class="col-span-2 text-right">Subtotal</div>
         </div>
 
-        <div class="divide-y divide-[#bed1dc] !mt-0">
+        <div id="confirmed-order-lines" class="divide-y divide-[#bed1dc] !mt-0">
             @forelse($products as $product)
                 <div class="py-3 font-normal text-black text-[13px] transition hover:bg-gray-50 px-2 space-y-1">
                     
@@ -113,30 +113,30 @@
                 {{-- Tres files de traçabilitat inferiors alineades amb el bloc comptable --}}
                 <div class="flex justify-between text-black">
                     <span class="font-semibold text-gray-500 uppercase tracking-wider">Codi</span>
-                    <span class="font-normal text-black tracking-wide">{{ $code }}</span>
+                    <span id="general-code" class="font-normal text-black tracking-wide">{{ $code }}</span>
                 </div>
                 <div class="flex justify-between text-black">
                     <span class="font-semibold text-gray-500 uppercase tracking-wider">Estat</span>
-                    <span class="font-normal text-black">{{ $status }}</span>
+                    <span id="general-status" class="font-normal text-black">{{ $status }}</span>
                 </div>
                 <div class="flex justify-between text-black">
                     <span class="font-semibold text-gray-500 uppercase tracking-wider">Data</span>
-                    <span class="font-normal text-black tracking-wide">{{ $date }}</span>
+                    <span id="general-date" class="font-normal text-black tracking-wide">{{ $date }}</span>
                 </div>
             </div>
             <div class="col-span-4 space-y-2 text-[13px] font-normal"></div>
             <div class="col-span-4 space-y-2 text-[13px] font-normal">
                 <div class="flex justify-between text-black">
                     <span class="uppercase">Base Imposable</span>
-                    <span class="font-bold text-black tracking-wide">{{ number_format($taxable_basis, 2, ',', '.') }} €</span>
+                    <span id="general-taxable-basis" class="font-bold text-black tracking-wide">{{ number_format($taxable_basis, 2, ',', '.') }} €</span>
                 </div>
                 <div class="flex justify-between text-black">
                     <span>IVA (21%)</span>
-                    <span class="font-bold text-black tracking-wide">{{ number_format($tax, 2, ',', '.') }} €</span>
+                    <span id="general-tax" class="font-bold text-black tracking-wide">{{ number_format($tax, 2, ',', '.') }} €</span>
                 </div>
                 <div class="flex justify-between text-black">
                     <span>TOTAL</span>
-                    <span class="font-bold text-black tracking-wide">{{ number_format($total, 2, ',', '.') }} €</span>
+                    <span id="general-total" class="font-bold text-black tracking-wide">{{ number_format($total, 2, ',', '.') }} €</span>
                 </div>
             </div>
         </div>
