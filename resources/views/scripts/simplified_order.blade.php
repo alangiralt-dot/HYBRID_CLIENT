@@ -28,6 +28,12 @@
         if (!response.ok) {
             try {
                 const errorData = await response.json();
+                if (errorData.message === "The selected customer id is invalid.") {
+                    //document.getElementById('orders-table-container')?.classList.add('hidden');
+                    showSuccessMessage("Com que encara no has confirmat cap comanda, et suggereixo que donis un cop d'ull a 'Fustes mecanitzades'.");
+                    return;
+                }
+                
                 showSystemAlert(errorData.message || response.status);
                 return;
             } catch (error) {
