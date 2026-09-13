@@ -228,11 +228,27 @@
             const errorBanner = document.getElementById('error-banner');
             const errorMessage = document.getElementById('error-message');
 
+            document.getElementById('success-banner')?.classList.add('hidden');
+
             if (errorBanner && errorMessage) {
                 errorMessage.textContent = message || "S'ha produït un error inesperat.";
                 errorBanner.classList.remove('hidden');
 
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                errorBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        function showSuccessMessage(message) {
+            const successBanner = document.getElementById('success-banner');
+            const successMessage = document.getElementById('success-message');
+
+            document.getElementById('error-banner')?.classList.add('hidden');
+
+            if (successBanner && successMessage) {
+                successMessage.textContent = message || "Acció completada correctament.";
+                successBanner.classList.remove('hidden');
+
+                successBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         }
     </script>
