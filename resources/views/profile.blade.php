@@ -80,6 +80,7 @@
         if (token) {
             submitBtn.textContent = 'Modificar perfil';
             document.getElementById('btn-delete-profile').classList.remove('hidden'); 
+            populateProfileData(token)
         } else {
             submitBtn.textContent = 'Registrar-se';
         }
@@ -97,5 +98,45 @@
             // Aquí llançarem el fetch asíncron cap a POST /api/customers...
         });
     });
+    async function populateProfileData(token) {
+        try {
+            const apiBase = "{{ config('services.api_serra.url') }}";
+            const response = await fetch(`${apiBase}/api/customers/profiles`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                try {
+                    const errorData = await response.json();
+                    showSystemAlert(errorData.message || response.status);
+                    return;
+                } catch (error) {
+                    showSystemAlert(error.message);
+                    return;
+                }
+            }
+
+            const data = await response.json();
+
+            document.getElementById('reg-first-name').value    = data.first_name;
+            document.getElementById('reg-last-name').value     = data.last_name;
+            document.getElementById('reg-phone').value         = data.phone;
+            document.getElementById('reg-street').value        = data.street;
+            document.getElementById('reg-address-number').value = data.address_number;
+            document.getElementById('reg-address-floor').value  = data.address_floor;
+            document.getElementById('reg-door').value           = data.door;
+            document.getElementById('reg-postal-code').value   = data.postal_code;
+            document.getElementById('reg-city-name').value     = data.city;
+            document.getElementById('reg-province-name').value = data.province;
+
+        } catch (error) {
+            showSystemAlert(error.message);
+            return;
+        }
+    }
 </script>
 @endsection
