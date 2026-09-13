@@ -169,6 +169,10 @@
                     return;
                 } else {
                     showSuccessMessage("El teu perfil s'ha modificat correctament.");
+                    
+                    document.getElementById('navComandes').classList.remove('hidden');
+                    document.getElementById('navElMeuEspai').classList.remove('hidden');
+                    
                     return;
                 }
 
