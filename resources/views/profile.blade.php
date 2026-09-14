@@ -185,6 +185,53 @@
                 return;
             }
         });
+
+        // 3. PETICIÓ ASÍNCRONA DE BAIXA: Destrucció d'usuari mantenint perfil històric
+        const btnDeleteProfile = document.getElementById('btn-delete-profile');
+        if (!btnDeleteProfile) return;
+        
+        btnDeleteProfile.addEventListener('click', async function() {
+            const apiBase = "{{ config('services.api_serra.url') }}";
+
+            try {
+                const response = await fetch(`${apiBase}/api/customers/users`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    try {
+                        const errorData = await response.json();
+                        showSystemAlert(errorData.message || response.status);
+                        return;
+                    } catch (error) {
+                        showSystemAlert(error.message);
+                        return;
+                    }
+                }
+
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    sessionStorage.removeItem('access_token');
+
+                    showSuccessMessage(result.message);
+                    
+                    document.body.style.pointerEvents = 'none';
+                    setTimeout(() => {
+                        window.location.href = '/alan/HYBRID_CLIENT/public/?clear_cart=1';
+                    }, 2000);
+                }
+
+            } catch (error) {
+                showSystemAlert(error.message);
+                return;
+            }
+        });
     });
 
     async function populateProfileData(token) {
