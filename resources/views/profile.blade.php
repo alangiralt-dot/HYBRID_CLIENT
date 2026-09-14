@@ -165,14 +165,18 @@
                     // Desem el token de seguretat de forma ultra ràpida a la memòria
                     sessionStorage.setItem('access_token', result.data.access_token);
                     
+                    //document.getElementById('navComandes').classList.remove('hidden');
+                    //document.getElementById('navElMeuEspai').classList.remove('hidden');
+
                     showSuccessMessage("El teu registre s'ha efectuat correctament.");
+                    document.body.style.pointerEvents = 'none';
+                    setTimeout(() => {
+                        window.location.href = '/alan/HYBRID_CLIENT/public/?clear_cart=1';
+                    }, 2000);
+                    
                     return;
                 } else {
                     showSuccessMessage("El teu perfil s'ha modificat correctament.");
-                    
-                    document.getElementById('navComandes').classList.remove('hidden');
-                    document.getElementById('navElMeuEspai').classList.remove('hidden');
-                    
                     return;
                 }
 

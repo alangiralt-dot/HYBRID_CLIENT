@@ -6,10 +6,10 @@ use App\Http\Controllers\CatalogueController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
 
-// rutes públiques
-Route::get('/', function () {
-    return redirect()->route('orders.showOrderDetails.current');
+Route::get('/', function (Request $request) {
+    return redirect()->route('orders.showOrderDetails.current', $request->query());
 });
+
 Route::get('/comandes/current', function (Request $request) {
     return (new OrderController())->showOrderDetails($request, 'current');
 })->name('orders.showOrderDetails.current');

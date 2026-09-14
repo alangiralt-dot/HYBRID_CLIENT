@@ -48,7 +48,7 @@
                 // 3. Punt 12 i 13 del teu full de ruta: si l'API respon amb èxit, fem el PRG del client
                 if (response.ok && data.status === 'success') {
                     // Forçem la redirecció GET neta cap al llistat del servidor client
-                    window.location.href = "{{ route('orders.showOrders') }}";
+                    window.location.href = "{{ route('orders.showOrders') }}?clear_cart=1";
                 } else {
                     // alert(data.message || "Error en processar la comanda amb la serradora central.");
                     showSystemAlert(data.message);
