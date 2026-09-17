@@ -59,7 +59,7 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
             
             if (responseData.status === 'success' && responseData.data.access_token) {
                 // Petició secundària amb fetch per netejar la sessió local de PHP
-                fetch("{{ route('orders.clearSession') }}", {
+                fetch("{{ route('orders.clearCartSession') }}", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

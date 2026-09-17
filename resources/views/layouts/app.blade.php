@@ -207,7 +207,7 @@
                 
                 // Preparem la petició asíncrona local per buidar la sessió de PHP
                 const xhrLocal = new XMLHttpRequest();
-                xhrLocal.open('POST', "{{ route('orders.clearSession') }}", true);
+                xhrLocal.open('POST', "{{ route('orders.clearCartSession') }}", true);
                 xhrLocal.setRequestHeader('Content-Type', 'application/json');
                 // Injectem el token CSRF de seguretat de forma directa amb Blade
                 xhrLocal.setRequestHeader('X-CSRF-TOKEN', "{{ csrf_token() }}");
