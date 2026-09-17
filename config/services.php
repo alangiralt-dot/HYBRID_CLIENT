@@ -36,7 +36,7 @@ return [
     ],
     
     'api_serra' => [
-        'url' => env('API_BASE_URL', 'http://localhost/alan/API_SERRA/public'),
+        'url' => env('API_BASE_URL', 'http://localhost:8000'),
     ],
 
 ];
