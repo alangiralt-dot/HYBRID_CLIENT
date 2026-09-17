@@ -63,6 +63,7 @@
                                            value="{{ $product->pack }}"
                                            min="{{ $product->pack }}"
                                            step="{{ $product->pack }}"
+                                           readonly
                                            class="w-10 text-center text-[12px] bg-white text-black font-normal focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
                                     <button type="button" onclick="this.parentNode.querySelector('input').stepUp()" class="px-2 py-1 bg-[#fffacd] text-black hover:bg-[#fff27e] transition border-l border-[#bed1dc] select-none text-[14px]">+</button>
                                 </div>

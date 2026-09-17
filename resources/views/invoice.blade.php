@@ -77,7 +77,7 @@
                                 <div class="flex items-center border border-[#bed1dc] rounded-lg overflow-hidden bg-white shadow-3xs">
                                     <button type="button" onclick="updateInvoiceSession({{ $product->id }}, -{{ $product->pack ?? 1 }}, this.parentNode.querySelector('input').value)" class="px-2 py-1 bg-[#fffacd] text-black hover:bg-[#fff27e] transition border-r border-[#bed1dc] select-none text-[14px]">-</button>
                                    
-                                    <input type="number" name="quantity[{{ $product->id }}]" value="{{ $product->quantity }}" min="{{ $product->pack ?? 1 }}" step="{{ $product->pack ?? 1 }}" class="w-10 text-center text-[12px] bg-white text-black font-normal focus:outline-none [appearance:textfield] [&amp;::-webkit-outer-spin-button]:appearance-none [&amp;::-webkit-inner-spin-button]:appearance-none">
+                                    <input type="number" name="quantity[{{ $product->id }}]" value="{{ $product->quantity }}" min="{{ $product->pack ?? 1 }}" step="{{ $product->pack ?? 1 }}" readonly class="w-10 text-center text-[12px] bg-white text-black font-normal focus:outline-none [appearance:textfield] [&amp;::-webkit-outer-spin-button]:appearance-none [&amp;::-webkit-inner-spin-button]:appearance-none">
                                     
                                     <button type="button" onclick="updateInvoiceSession({{ $product->id }}, {{ $product->pack ?? 1 }}, this.parentNode.querySelector('input').value)" class="px-2 py-1 bg-[#fffacd] text-black hover:bg-[#fff27e] transition border-l border-[#bed1dc] select-none text-[14px]">+</button>
                                 </div>
