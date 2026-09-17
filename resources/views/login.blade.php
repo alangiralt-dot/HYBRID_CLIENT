@@ -46,50 +46,42 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
     passwordInput.classList.replace('border-red-500', 'border-gray-200');
 
     // Preparem la petició asíncrona com al selector de quantitats
-    const xhr = new XMLHttpRequest();
-    // Utilitzem l'URL complet del teu backend central de l'API_SERRA
-    xhr.open('POST', "{{ config('services.api_serra.url') }}/api/customers/tokens", true);
-
-    xhr.setRequestHeader('Content-Type', 'application/json');
-
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4) {
-            if (xhr.status === 201) { // 201 Created tal com ens ha mostrat Postman
-                const response = JSON.parse(xhr.responseText);
-                
-                if (response.status === 'success' && response.data.access_token) {
-                    // Preparem la petició asíncrona local per buidar la sessió de PHP
-                    const xhrLocal = new XMLHttpRequest();
-                    xhrLocal.open('POST', "{{ route('orders.clearSession') }}", true);
-                    xhrLocal.setRequestHeader('Content-Type', 'application/json');
-                    // Injectem el token CSRF que Laravel demana per seguretat a les rutes locals POST
-                    xhrLocal.setRequestHeader('X-CSRF-TOKEN', "{{ csrf_token() }}");
-
-                    xhrLocal.onreadystatechange = function () {
-                        if (xhrLocal.readyState === 4) {
-                            // Un cop la sessió de PHP s'ha buidat, guardem el token al navegador
-                            sessionStorage.setItem('access_token', response.data.access_token);
-                            // Redirigim finalment cap al carretó de la comanda actual
-                            window.location.href = "{{ url('/comandes/current') }}";
-                        }
-                    };
-                    xhrLocal.send(); // Enviem la petició de neteja de fons
-                }
-            } else {
-                // Si la petició falla (credencials incorrectes, 401, etc.)
-                loginError.textContent = 'El correu electrònic o la contrasenya no són correctes.';
-                loginError.classList.remove('hidden');
-                emailInput.classList.replace('border-gray-200', 'border-red-500');
-                passwordInput.classList.replace('border-gray-200', 'border-red-500');
+    fetch("{{ config('services.api_serra.url') }}/api/customers/tokens", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email: email, password: password })
+    })
+    .then(async response => {
+        if (response.status === 201) {
+            const responseData = await response.json();
+            
+            if (responseData.status === 'success' && responseData.data.access_token) {
+                // Petició secundària amb fetch per netejar la sessió local de PHP
+                fetch("{{ route('orders.clearSession') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    }
+                })
+                .then(() => {
+                    sessionStorage.setItem('access_token', responseData.data.access_token);
+                    window.location.href = "{{ url('/comandes/current') }}";
+                });
             }
+        } else {
+            loginError.textContent = 'El correu electrònic o la contrasenya no són correctes.';
+            loginError.classList.remove('hidden');
+            emailInput.classList.replace('border-gray-200', 'border-red-500');
+            passwordInput.classList.replace('border-gray-200', 'border-red-500');
         }
-    };
-
-    // Enviem les dades en format JSON neta cap a l'endpoint
-    xhr.send(JSON.stringify({
-        email: email,
-        password: password
-    }));
+    })
+    .catch(error => {
+        loginError.textContent = 'S\'ha produït un error de connexió amb el servidor.';
+        loginError.classList.remove('hidden');
+    });
 });
 </script>
 
