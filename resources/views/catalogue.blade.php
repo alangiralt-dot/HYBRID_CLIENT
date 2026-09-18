@@ -101,15 +101,17 @@
         // 2. Injectem el token directament des de Laravel de forma nativa via Blade
         const csrfToken = "{{ csrf_token() }}";
 
-        // 3. Preparem la petició asíncrona amb XMLHttpRequest
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', "{{ route('orders.updateQuantity') }}", true);
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
-
-        // 4. Definim què fer quan el servidor ens respongui
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
+        // 3. Preparem la petició asíncrona amb fetch
+        fetch("{{ route('orders.updateQuantity') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: `product_id=${productId}&quantity=${quantity}`
+        })
+        .then(response => {
+            if (response.ok) {
                 // GUARDEM el disseny original de la teva graella abans de canviar-lo
                 const originalContent = row.innerHTML;
                 const originalClasses = row.className;
@@ -131,11 +133,10 @@
                     row.innerHTML = originalContent;
                 }, 4000);
             }
-        };
-
-        // 5. Enviem les dades en segon pla cap a Laravel
-        // La petició viatja pel servidor, Laravel processa la sessió, i quan retorna un codi d'èxit 200, l'objecte detecta el canvi d'estat i és en aquell precís moment de futur quan s'executa la funció de dins de la callback per pintar la teva franja verda
-        xhr.send(`product_id=${productId}&quantity=${quantity}`);
+        })
+        .catch(error => {
+            console.error("Error en afegir el producte:", error);
+        });
     }
 </script>
 

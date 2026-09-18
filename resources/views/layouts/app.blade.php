@@ -205,23 +205,26 @@
             navLogout.addEventListener('click', function(e) {
                 e.preventDefault();
                 
-                // Preparem la petició asíncrona local per buidar la sessió de PHP
-                const xhrLocal = new XMLHttpRequest();
-                xhrLocal.open('POST', "{{ route('orders.clearCartSession') }}", true);
-                xhrLocal.setRequestHeader('Content-Type', 'application/json');
-                // Injectem el token CSRF de seguretat de forma directa amb Blade
-                xhrLocal.setRequestHeader('X-CSRF-TOKEN', "{{ csrf_token() }}");
-
-                xhrLocal.onreadystatechange = function () {
-                    if (xhrLocal.readyState === 4) {
-                        // Un cop la sessió de PHP està buida, netegem el navegador i expulsem
-                        sessionStorage.removeItem('access_token');
-                        window.location.href = "{{ url('/') }}";
+                // Preparem la petició asíncrona local per buidar la sessió de PHP usant fetch
+                fetch("{{ route('orders.clearCartSession') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
                     }
-                };
-                xhrLocal.send(); // Enviem la petició de neteja de fons
+                })
+                .then(response => {
+                    // Un cop la sessió de PHP està buida, netegem el navegador i expulsem
+                    sessionStorage.removeItem('access_token');
+                    window.location.href = "{{ url('/') }}";
+                })
+                .catch(error => {
+                    console.error("Error en tancar la sessió:", error);
+                    // Com a mesura de seguretat, expulsem l'usuari igualment si falla la xarxa
+                    sessionStorage.removeItem('access_token');
+                    window.location.href = "{{ url('/') }}";
+                });
             });
-
         });
         
         function showSystemAlert(message) {

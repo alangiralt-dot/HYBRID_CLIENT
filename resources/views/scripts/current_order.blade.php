@@ -76,36 +76,45 @@
         const csrfToken = "{{ csrf_token() }}";
 
         // 2. Preparem la petició POST cap a la teva ruta oficial d'afegir
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', "{{ route('orders.updateQuantity') }}", true);
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
-
-        // 3. Un cop la sessió s'ha modificat amb èxit pel controlador, recarreguem la URL
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
+        fetch("{{ route('orders.updateQuantity') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: `product_id=${productId}&quantity=${step}`
+        })
+        .then(response => {
+            if (response.ok) {
+                // 3. Un cop la sessió s'ha modificat amb èxit, recarreguem la URL
                 window.location.href = "{{ url('/comandes/current') }}";
             }
-        };
+        })
+        .catch(error => {
+            console.error("Error en actualitzar la quantitat:", error);
+        });
 
-        // 4. ENVIEM EL STEP DIRECTAMENT: Laravel farà el `+= $step` exacte a la sessió
-        xhr.send(`product_id=${productId}&quantity=${step}`);
     }
+
     function removeInvoiceItem(productId) {
         const csrfToken = "{{ csrf_token() }}";
 
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', "{{ route('orders.remove') }}", true);
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
-
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status === 200) {
+        fetch("{{ route('orders.remove') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: `product_id=${productId}`
+        })
+        .then(response => {
+            if (response.ok) {
                 // Quan la sessió s'ha buidat, cridem immediatament la URL comandes/current
                 window.location.href = "{{ url('/comandes/current') }}";
             }
-        };
-
-        xhr.send(`product_id=${productId}`);
+        })
+        .catch(error => {
+            console.error("Error en eliminar el producte:", error);
+        });
     }
 </script>
