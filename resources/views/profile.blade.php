@@ -171,7 +171,7 @@
                     showSuccessMessage("El teu registre s'ha efectuat correctament.");
                     document.body.style.pointerEvents = 'none';
                     setTimeout(() => {
-                        window.location.href = '/alan/HYBRID_CLIENT/public/?clear_cart=1';
+                        window.location.href = "{{ url('/?clear_cart=1') }}";
                     }, 2000);
                     
                     return;
@@ -223,7 +223,7 @@
                     
                     document.body.style.pointerEvents = 'none';
                     setTimeout(() => {
-                        window.location.href = '/alan/HYBRID_CLIENT/public/?clear_cart=1';
+                        window.location.href = "{{ url('/?clear_cart=1') }}";
                     }, 2000);
                 }
 
