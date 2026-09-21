@@ -142,6 +142,7 @@
                 if (!token && result.status === 'success' && result.data.access_token) {
                     // Desem el token de seguretat de forma ultra ràpida a la memòria
                     sessionStorage.setItem('access_token', result.data.access_token);
+                    sessionStorage.setItem('is_admin', result.data.is_admin);
                     
                     //document.getElementById('navComandes').classList.remove('hidden');
                     //document.getElementById('navElMeuEspai').classList.remove('hidden');

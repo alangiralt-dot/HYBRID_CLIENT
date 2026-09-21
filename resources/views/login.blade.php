@@ -67,6 +67,7 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
                 })
                 .then(() => {
                     sessionStorage.setItem('access_token', responseData.data.access_token);
+                    sessionStorage.setItem('is_admin', responseData.data.is_admin);
                     window.location.href = "{{ url('/comandes/current') }}";
                 });
             }

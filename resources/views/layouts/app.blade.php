@@ -215,13 +215,13 @@
                 })
                 .then(response => {
                     // Un cop la sessió de PHP està buida, netegem el navegador i expulsem
-                    sessionStorage.removeItem('access_token');
+                    sessionStorage.clear()
                     window.location.href = "{{ url('/') }}";
                 })
                 .catch(error => {
                     console.error("Error en tancar la sessió:", error);
                     // Com a mesura de seguretat, expulsem l'usuari igualment si falla la xarxa
-                    sessionStorage.removeItem('access_token');
+                    sessionStorage.clear()
                     window.location.href = "{{ url('/') }}";
                 });
             });
