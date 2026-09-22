@@ -126,7 +126,7 @@
 
             </div>
             <div class="border-t border-[#bed1dc] pt-5 space-y-1.5">
-                <a href="{{-- url('/el-meu-perfil') --}}" class="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-xl transition {{ request()->is('el-meu-perfil') ? 'text-gray-900 bg-gray-50' : 'text-gray-700 bg-white hover:bg-gray-50' }}">
+                <a href="{{ url('/el-meu-perfil') }}" class="flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-xl transition {{ request()->is('el-meu-perfil') ? 'text-gray-900 bg-gray-50' : 'text-gray-700 bg-white hover:bg-gray-50' }}">
                     <svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                     <span>El meu perfil</span>
                 </a>
@@ -204,35 +204,36 @@
             // Comportament del clic del botó de Logout asíncron
             navLogout.addEventListener('click', function(e) {
                 e.preventDefault();
-                
-                // Preparem la petició asíncrona local per buidar la sessió de PHP
-                const xhrLocal = new XMLHttpRequest();
-                xhrLocal.open('POST', "{{ route('orders.clearSession') }}", true);
-                xhrLocal.setRequestHeader('Content-Type', 'application/json');
-                // Injectem el token CSRF de seguretat de forma directa amb Blade
-                xhrLocal.setRequestHeader('X-CSRF-TOKEN', "{{ csrf_token() }}");
-
-                xhrLocal.onreadystatechange = function () {
-                    if (xhrLocal.readyState === 4) {
-                        // Un cop la sessió de PHP està buida, netegem el navegador i expulsem
-                        sessionStorage.removeItem('access_token');
-                        window.location.href = "{{ url('/') }}";
-                    }
-                };
-                xhrLocal.send(); // Enviem la petició de neteja de fons
+                sessionStorage.clear()
+                window.location.href = "{{ url('/') }}?clear_session=1";
             });
-
         });
         
         function showSystemAlert(message) {
             const errorBanner = document.getElementById('error-banner');
             const errorMessage = document.getElementById('error-message');
 
+            document.getElementById('success-banner')?.classList.add('hidden');
+
             if (errorBanner && errorMessage) {
                 errorMessage.textContent = message || "S'ha produït un error inesperat.";
                 errorBanner.classList.remove('hidden');
 
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                errorBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        function showSuccessMessage(message) {
+            const successBanner = document.getElementById('success-banner');
+            const successMessage = document.getElementById('success-message');
+
+            document.getElementById('error-banner')?.classList.add('hidden');
+
+            if (successBanner && successMessage) {
+                successMessage.textContent = message || "Acció completada correctament.";
+                successBanner.classList.remove('hidden');
+
+                successBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         }
     </script>

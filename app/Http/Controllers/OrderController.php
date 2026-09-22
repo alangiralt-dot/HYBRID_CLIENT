@@ -74,13 +74,18 @@ class OrderController extends Controller
         ], 200);
     }
 
-    public function showOrders()
+    public function showOrders(Request $request)
     {
+        if ($request->query('clear_cart') === '1') session()->forget('current_order');
+        
         return view('orders');
     }
 
     public function showOrderDetails(Request $request, $id)
     {
+        if ($request->query('clear_cart') === '1') session()->forget('current_order');
+        if ($request->query('clear_session') === '1') $request->session()->flush();
+        
         $date = now()->format('d/m/Y H:i');
 
         if ($id === 'current') {
