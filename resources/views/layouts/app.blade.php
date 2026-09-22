@@ -204,26 +204,8 @@
             // Comportament del clic del botó de Logout asíncron
             navLogout.addEventListener('click', function(e) {
                 e.preventDefault();
-                
-                // Preparem la petició asíncrona local per buidar la sessió de PHP usant fetch
-                fetch("{{ route('orders.clearCartSession') }}", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
-                    }
-                })
-                .then(response => {
-                    // Un cop la sessió de PHP està buida, netegem el navegador i expulsem
-                    sessionStorage.clear()
-                    window.location.href = "{{ url('/') }}";
-                })
-                .catch(error => {
-                    console.error("Error en tancar la sessió:", error);
-                    // Com a mesura de seguretat, expulsem l'usuari igualment si falla la xarxa
-                    sessionStorage.clear()
-                    window.location.href = "{{ url('/') }}";
-                });
+                sessionStorage.clear()
+                window.location.href = "{{ url('/') }}?clear_session=1";
             });
         });
         

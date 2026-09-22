@@ -20,8 +20,8 @@ Route::post('/orders/remove', [OrderController::class, 'removeFromCurrentOrder']
 Route::get('/login', function () {
     return view('login');
 })->name('login');
-Route::post('/orders/clear-cart-session', [OrderController::class, 'clearCartSession'])->name('orders.clearCartSession');
 
+Route::post('/roles', [ProfileController::class, 'storeRole'])->name('roles.storeRole');
 
 Route::post('/orders/confirm', [OrderController::class, 'confirmOrder'])->name('orders.confirm');
 Route::get('/comandes', [OrderController::class, 'showOrders'])->name('orders.showOrders');

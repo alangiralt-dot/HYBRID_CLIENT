@@ -140,18 +140,24 @@
                 const result = await response.json();
 
                 if (!token && result.status === 'success' && result.data.access_token) {
-                    // Desem el token de seguretat de forma ultra ràpida a la memòria
-                    sessionStorage.setItem('access_token', result.data.access_token);
-                    sessionStorage.setItem('is_admin', result.data.is_admin);
-                    
-                    //document.getElementById('navComandes').classList.remove('hidden');
-                    //document.getElementById('navElMeuEspai').classList.remove('hidden');
-
-                    showSuccessMessage("El teu registre s'ha efectuat correctament.");
-                    document.body.style.pointerEvents = 'none';
-                    setTimeout(() => {
-                        window.location.href = "{{ url('/?clear_cart=1') }}";
-                    }, 2000);
+                    fetch("{{ route('roles.storeRole') }}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                        },
+                        body: JSON.stringify({
+                            "is_admin": result.data.is_admin
+                        })
+                    })
+                    .then(() => {
+                        sessionStorage.setItem('access_token', result.data.access_token);
+                        showSuccessMessage("El teu registre s'ha efectuat correctament.");
+                        document.body.style.pointerEvents = 'none';
+                        setTimeout(() => {
+                            window.location.href = "{{ url('/?clear_cart=1') }}";
+                        }, 2000);
+                    });
                     
                     return;
                 } else {
@@ -202,7 +208,7 @@
                     
                     document.body.style.pointerEvents = 'none';
                     setTimeout(() => {
-                        window.location.href = "{{ url('/?clear_cart=1') }}";
+                        window.location.href = "{{ url('/?clear_session=1') }}";
                     }, 2000);
                 }
 

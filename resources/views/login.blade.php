@@ -57,18 +57,19 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
             const responseData = await response.json();
             
             if (responseData.status === 'success' && responseData.data.access_token) {
-                // Petició secundària amb fetch per netejar la sessió local de PHP
-                fetch("{{ route('orders.clearCartSession') }}", {
+                fetch("{{ route('roles.storeRole') }}", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': "{{ csrf_token() }}"
-                    }
+                    },
+                    body: JSON.stringify({
+                        "is_admin": responseData.data.is_admin
+                    })
                 })
                 .then(() => {
                     sessionStorage.setItem('access_token', responseData.data.access_token);
-                    sessionStorage.setItem('is_admin', responseData.data.is_admin);
-                    window.location.href = "{{ url('/comandes/current') }}";
+                    window.location.href = "{{ url('/') }}?clear_cart=1";
                 });
             }
         } else {
