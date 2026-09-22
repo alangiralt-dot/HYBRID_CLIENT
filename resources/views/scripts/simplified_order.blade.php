@@ -64,7 +64,11 @@
                 orderLink.href = `{{ url('/comandes') }}/${order.id}`;
 
                 clone.querySelector('.order-code').textContent = order.code;
-                clone.querySelector('.order-status').textContent = order.status;
+                @if(session('is_admin') === 'client')
+                    clone.querySelector('.order-status').textContent = order.status;
+                @else
+                    clone.querySelector('.order-status-select').value = order.status;
+                @endif
                 clone.querySelector('.order-date').textContent = order.date;
                 clone.querySelector('.order-availability').textContent = order.order_availability;
 
