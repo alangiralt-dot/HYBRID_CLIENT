@@ -78,7 +78,12 @@ class OrderController extends Controller
     {
         if ($request->query('clear_cart') === '1') session()->forget('current_order');
         
-        return view('orders');
+        $statusesList = [];
+        $apiUrl = config('services.api_serra.url') . '/api/statuses';
+        $response = Http::acceptJson()->get($apiUrl);
+        if ($response->successful()) $statusesList = $response->json();
+        
+        return view('orders', compact('statusesList'));
     }
 
     public function showOrderDetails(Request $request, $id)
