@@ -59,12 +59,22 @@
 
             confirmedOrders.forEach(order => {
                 const clone = rowTemplate.content.cloneNode(true);
+                
+                clone.querySelector('.order-row').id = `row-${order.id}`;
 
                 const orderLink = clone.querySelector('.order-link');
                 orderLink.href = `{{ url('/comandes') }}/${order.id}`;
 
                 clone.querySelector('.order-code').textContent = order.code;
-                clone.querySelector('.order-status').textContent = order.status;
+                @if(session('is_admin') === 'client')
+                    clone.querySelector('.order-status').textContent = order.status;
+                @else
+                    const statusSelect = clone.querySelector('.order-status-select');
+                    if (statusSelect) {
+                        statusSelect.value = order.status;
+                        statusSelect.setAttribute('data-order-id', order.id);
+                    }
+                @endif
                 clone.querySelector('.order-date').textContent = order.date;
                 clone.querySelector('.order-availability').textContent = order.order_availability;
 
@@ -79,6 +89,10 @@
 
             ordersContainer.innerHTML = '';
             ordersContainer.appendChild(mainFragment);
+            
+            @if(session('is_admin') === 'admin')
+                @include('scripts.admin_status_event')
+            @endif
 
         } catch (error) {
             showSystemAlert(error.message);
