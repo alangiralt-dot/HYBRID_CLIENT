@@ -1,0 +1,181 @@
+PERE@LAPTOP-UJ3EQ57O MINGW64 /c/xampp/htdocs/alan/HYBRID_CLIENT (feature/api-client-refactor)
+$ git status -u
+On branch feature/api-client-refactor
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   resources/views/catalogue.blade.php
+        modified:   resources/views/layouts/app.blade.php
+        modified:   resources/views/scripts/current_order.blade.php
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+PERE@LAPTOP-UJ3EQ57O MINGW64 /c/xampp/htdocs/alan/HYBRID_CLIENT (feature/api-client-refactor)
+$ git diff HEAD
+diff --git a/resources/views/catalogue.blade.php b/resources/views/catalogue.blade.php
+index 818c7c3..1f4caee 100644
+--- a/resources/views/catalogue.blade.php
++++ b/resources/views/catalogue.blade.php
+@@ -101,15 +101,17 @@ function testAddProduct(productId) {
+         // 2. Injectem el token directament des de Laravel de forma nativa via Blade
+         const csrfToken = "{{ csrf_token() }}";
+
+-        // 3. Preparem la petició asíncrona amb XMLHttpRequest
+-        const xhr = new XMLHttpRequest();
+-        xhr.open('POST', "{{ route('orders.updateQuantity') }}", true);
+-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+-        xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
+-
+-        // 4. Definim què fer quan el servidor ens respongui
+-        xhr.onreadystatechange = function () {
+-            if (xhr.readyState === 4 && xhr.status === 200) {
++        // 3. Preparem la petició asíncrona amb fetch
++        fetch("{{ route('orders.updateQuantity') }}", {
++            method: 'POST',
++            headers: {
++                'Content-Type': 'application/x-www-form-urlencoded',
++                'X-CSRF-TOKEN': csrfToken
++            },
++            body: `product_id=${productId}&quantity=${quantity}`
++        })
++        .then(response => {
++            if (response.ok) {
+                 // GUARDEM el disseny original de la teva graella abans de canviar-lo
+                 const originalContent = row.innerHTML;
+                 const originalClasses = row.className;
+@@ -131,11 +133,10 @@ function testAddProduct(productId) {
+                     row.innerHTML = originalContent;
+                 }, 4000);
+             }
+-        };
+-
+-        // 5. Enviem les dades en segon pla cap a Laravel
+-        // La petició viatja pel servidor, Laravel processa la sessió, i quan retorna un codi d'èxit 200, l'objecte detecta el canvi d'estat i és en aquell precís moment de futur quan s'executa la funció de dins de la callback per pintar la teva franja verda
+-        xhr.send(`product_id=${productId}&quantity=${quantity}`);
++        })
++        .catch(error => {
++            console.error("Error en afegir el producte:", error);
++        });
+     }
+ </script>
+
+diff --git a/resources/views/layouts/app.blade.php b/resources/views/layouts/app.blade.php
+index d9bbb25..2122723 100644
+--- a/resources/views/layouts/app.blade.php
++++ b/resources/views/layouts/app.blade.php
+@@ -205,23 +205,26 @@ class="p-1 bg-transparent text-gray-400 hover:text-red-600 transition"
+             navLogout.addEventListener('click', function(e) {
+                 e.preventDefault();
+
+-                // Preparem la petició asíncrona local per buidar la sessió de PHP
+-                const xhrLocal = new XMLHttpRequest();
+-                xhrLocal.open('POST', "{{ route('orders.clearCartSession') }}", true);
+-                xhrLocal.setRequestHeader('Content-Type', 'application/json');
+-                // Injectem el token CSRF de seguretat de forma directa amb Blade
+-                xhrLocal.setRequestHeader('X-CSRF-TOKEN', "{{ csrf_token() }}");
+-
+-                xhrLocal.onreadystatechange = function () {
+-                    if (xhrLocal.readyState === 4) {
+-                        // Un cop la sessió de PHP està buida, netegem el navegador i expulsem
+-                        sessionStorage.removeItem('access_token');
+-                        window.location.href = "{{ url('/') }}";
++                // Preparem la petició asíncrona local per buidar la sessió de PHP usant fetch
++                fetch("{{ route('orders.clearCartSession') }}", {
++                    method: 'POST',
++                    headers: {
++                        'Content-Type': 'application/json',
++                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                     }
+-                };
+-                xhrLocal.send(); // Enviem la petició de neteja de fons
++                })
++                .then(response => {
++                    // Un cop la sessió de PHP està buida, netegem el navegador i expulsem
++                    sessionStorage.removeItem('access_token');
++                    window.location.href = "{{ url('/') }}";
++                })
++                .catch(error => {
++                    console.error("Error en tancar la sessió:", error);
++                    // Com a mesura de seguretat, expulsem l'usuari igualment si falla la xarxa
++                    sessionStorage.removeItem('access_token');
++                    window.location.href = "{{ url('/') }}";
++                });
+             });
+-
+         });
+
+         function showSystemAlert(message) {
+diff --git a/resources/views/scripts/current_order.blade.php b/resources/views/scripts/current_order.blade.php
+index 261d9b9..36f8fd4 100644
+--- a/resources/views/scripts/current_order.blade.php
++++ b/resources/views/scripts/current_order.blade.php
+@@ -76,36 +76,45 @@ function updateInvoiceSession(productId, step, currentValue) {
+         const csrfToken = "{{ csrf_token() }}";
+
+         // 2. Preparem la petició POST cap a la teva ruta oficial d'afegir
+-        const xhr = new XMLHttpRequest();
+-        xhr.open('POST', "{{ route('orders.updateQuantity') }}", true);
+-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+-        xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
+-
+-        // 3. Un cop la sessió s'ha modificat amb èxit pel controlador, recarreguem la URL
+-        xhr.onreadystatechange = function () {
+-            if (xhr.readyState === 4 && xhr.status === 200) {
++        fetch("{{ route('orders.updateQuantity') }}", {
++            method: 'POST',
++            headers: {
++                'Content-Type': 'application/x-www-form-urlencoded',
++                'X-CSRF-TOKEN': csrfToken
++            },
++            body: `product_id=${productId}&quantity=${step}`
++        })
++        .then(response => {
++            if (response.ok) {
++                // 3. Un cop la sessió s'ha modificat amb èxit, recarreguem la URL
+                 window.location.href = "{{ url('/comandes/current') }}";
+             }
+-        };
++        })
++        .catch(error => {
++            console.error("Error en actualitzar la quantitat:", error);
++        });
+
+-        // 4. ENVIEM EL STEP DIRECTAMENT: Laravel farà el `+= $step` exacte a la sessió
+-        xhr.send(`product_id=${productId}&quantity=${step}`);
+     }
++
+     function removeInvoiceItem(productId) {
+         const csrfToken = "{{ csrf_token() }}";
+
+-        const xhr = new XMLHttpRequest();
+-        xhr.open('POST', "{{ route('orders.remove') }}", true);
+-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+-        xhr.setRequestHeader('X-CSRF-TOKEN', csrfToken);
+-
+-        xhr.onreadystatechange = function () {
+-            if (xhr.readyState === 4 && xhr.status === 200) {
++        fetch("{{ route('orders.remove') }}", {
++            method: 'POST',
++            headers: {
++                'Content-Type': 'application/x-www-form-urlencoded',
++                'X-CSRF-TOKEN': csrfToken
++            },
++            body: `product_id=${productId}`
++        })
++        .then(response => {
++            if (response.ok) {
+                 // Quan la sessió s'ha buidat, cridem immediatament la URL comandes/current
+                 window.location.href = "{{ url('/comandes/current') }}";
+             }
+-        };
+-
+-        xhr.send(`product_id=${productId}`);
++        })
++        .catch(error => {
++            console.error("Error en eliminar el producte:", error);
++        });
+     }
+ </script>
+
+PERE@LAPTOP-UJ3EQ57O MINGW64 /c/xampp/htdocs/alan/HYBRID_CLIENT (feature/api-client-refactor)
+$
