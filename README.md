@@ -1,3 +1,17 @@
+## 0. Guia de clonació i visualització local de la documentació
+Aquest apartat inicial té com a finalitat descriure el procediment per descarregar el repositori des de GitHub cap a l'entorn de treball local i habilitar la visualització immediata dels fitxers de documentació estructurats en format HTML.
+## 0.1. 📥 Clonació del Repositori Git
+Per obtenir una còpia exacta del projecte i de tota la seva documentació a l'ordinador, s'ha d'obrir la terminal de comandaments (Git Bash, Power Shell o CMD) i executar les següents instruccions ordenades:
+
+# 1. Navega fins a la carpeta local on vols desar el projecte (Exemple)
+cd C:\xampp\htdocs\alan\
+# 2. Clona el repositori remot de GitHub des de la branca develop
+git clone -b develop https://github.com/alangiralt-dot/HYBRID_CLIENT.git
+# 3. Accedeix a la carpeta arrel de l'aplicació que s'acaba de crear
+cd HYBRID_CLIENT
+
+---
+
 ## 1 Descripció del Model IA Seleccionat
 
 Per al desenvolupament assistit del client *frontend* d'aquesta pràctica, s'ha seleccionat l'ecosistema de **Google AI** (utilitzant els models de la família **Gemini** a través de google.com/ai).
@@ -226,6 +240,12 @@ La IA va facilitar la correcta implementació i comprensió del motor de plantil
 L'assistència de la IA va ser clau per comprendre la necessitat imperiosa de protegir les comunicacions asíncronas mitjançant l'ús natiu del csrf_token, automatitzant la injecció de les capçaleres X-CSRF-TOKEN a les peticions HTTP fetch realitzades des del navegador cap al servidor del client.
 
 ### 5.2 Reptes, Aprenentatges i Limitacions de la IA
+
+---
+
+## 6 Codi al repositori de GitHub
+
+
 
 #### 5.2.1 El perill de les solucions genèriques:
 Durant el procés, es va fer evident que la IA tendeix a proposar arquitectures genèriques estandarditzades (com delegar tot el flux a una Single Page Application clàssica). Va requerir una ntervenció humana exigent i l'anàlisi estricte amb el depurador Xdebug per redirigir la IA i fer-li entendre que el projecte es basava en una arquitectura mixta molt particular, on coexisteixen la sessió de PHP local (per a usuaris anònims) i les consultes de servidor a servidor (mitjançant la Facade HTTP).
