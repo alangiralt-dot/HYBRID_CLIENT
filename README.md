@@ -1,14 +1,25 @@
 ## 0. Guia de clonació i visualització local de la documentació
 Aquest apartat inicial té com a finalitat descriure el procediment per descarregar el repositori des de GitHub cap a l'entorn de treball local i habilitar la visualització immediata dels fitxers de documentació estructurats en format HTML.
-## 0.1. 📥 Clonació del Repositori Git
+### 0.1 Clonació del Repositori Git
 Per obtenir una còpia exacta del projecte i de tota la seva documentació a l'ordinador, s'ha d'obrir la terminal de comandaments (Git Bash, Power Shell o CMD) i executar les següents instruccions ordenades:
 
-# 1. Navega fins a la carpeta local on vols desar el projecte (Exemple)
+* 1. Navega fins a la carpeta local on vols desar el projecte (Exemple)
+
+```bash
 cd C:\xampp\htdocs\alan\
-# 2. Clona el repositori remot de GitHub des de la branca develop
+```
+
+* 2. Clona el repositori remot de GitHub des de la branca develop
+
+```bash
 git clone -b develop https://github.com/alangiralt-dot/HYBRID_CLIENT.git
-# 3. Accedeix a la carpeta arrel de l'aplicació que s'acaba de crear
+```
+
+* 3. Accedeix a la carpeta arrel de l'aplicació que s'acaba de crear
+
+```bash
 cd HYBRID_CLIENT
+```
 
 ---
 
