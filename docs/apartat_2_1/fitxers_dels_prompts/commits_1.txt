@@ -1,0 +1,145 @@
+PERE@LAPTOP-UJ3EQ57O MINGW64 /c/xampp/htdocs/alan/HYBRID_CLIENT (feature/user-registration)
+$ git status -u
+On branch feature/user-registration
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   config/services.php
+        modified:   resources/views/catalogue.blade.php
+        modified:   resources/views/invoice.blade.php
+        modified:   resources/views/login.blade.php
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+PERE@LAPTOP-UJ3EQ57O MINGW64 /c/xampp/htdocs/alan/HYBRID_CLIENT (feature/user-registration)
+$ git diff HEAD
+diff --git a/config/services.php b/config/services.php
+index 893c5fc..5a17988 100644
+--- a/config/services.php
++++ b/config/services.php
+@@ -36,7 +36,7 @@
+     ],
+
+     'api_serra' => [
+-        'url' => env('API_BASE_URL', 'http://localhost/alan/API_SERRA/public'),
++        'url' => env('API_BASE_URL', 'http://localhost:8000'),
+     ],
+
+ ];
+diff --git a/resources/views/catalogue.blade.php b/resources/views/catalogue.blade.php
+index 5fe9072..818c7c3 100644
+--- a/resources/views/catalogue.blade.php
++++ b/resources/views/catalogue.blade.php
+@@ -63,6 +63,7 @@
+                                            value="{{ $product->pack }}"
+                                            min="{{ $product->pack }}"
+                                            step="{{ $product->pack }}"
++                                           readonly
+                                            class="w-10 text-center text-[12px] bg-white text-black font-normal focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
+                                     <button type="button" onclick="this.parentNode.querySelector('input').stepUp()" class="px-2 py-1 bg-[#fffacd] text-black hover:bg-[#fff27e] transition border-l border-[#bed1dc] select-none text-[14px]">+</button>
+                                 </div>
+diff --git a/resources/views/invoice.blade.php b/resources/views/invoice.blade.php
+index 8bd3e19..d84833f 100644
+--- a/resources/views/invoice.blade.php
++++ b/resources/views/invoice.blade.php
+@@ -77,7 +77,7 @@ class="p-1 bg-transparent text-gray-400 hover:text-red-600 transition"
+                                 <div class="flex items-center border border-[#bed1dc] rounded-lg overflow-hidden bg-white shadow-3xs">
+                                     <button type="button" onclick="updateInvoiceSession({{ $product->id }}, -{{ $product->pack ?? 1 }}, this.parentNode.querySelector('input').value)" class="px-2 py-1 bg-[#fffacd] text-black hover:bg-[#fff27e] transition border-r border-[#bed1dc] select-none text-[14px]">-</button>
+
+-                                    <input type="number" name="quantity[{{ $product->id }}]" value="{{ $product->quantity }}" min="{{ $product->pack ?? 1 }}" step="{{ $product->pack ?? 1 }}" class="w-10 text-center text-[12px] bg-white text-black font-normal focus:outline-none [appearance:textfield] [&amp;::-webkit-outer-spin-button]:appearance-none [&amp;::-webkit-inner-spin-button]:appearance-none">
++                                    <input type="number" name="quantity[{{ $product->id }}]" value="{{ $product->quantity }}" min="{{ $product->pack ?? 1 }}" step="{{ $product->pack ?? 1 }}" readonly class="w-10 text-center text-[12px] bg-white text-black font-normal focus:outline-none [appearance:textfield] [&amp;::-webkit-outer-spin-button]:appearance-none [&amp;::-webkit-inner-spin-button]:appearance-none">
+
+                                     <button type="button" onclick="updateInvoiceSession({{ $product->id }}, {{ $product->pack ?? 1 }}, this.parentNode.querySelector('input').value)" class="px-2 py-1 bg-[#fffacd] text-black hover:bg-[#fff27e] transition border-l border-[#bed1dc] select-none text-[14px]">+</button>
+                                 </div>
+diff --git a/resources/views/login.blade.php b/resources/views/login.blade.php
+index e05e734..ec6fd1d 100644
+--- a/resources/views/login.blade.php
++++ b/resources/views/login.blade.php
+@@ -46,50 +46,42 @@
+     passwordInput.classList.replace('border-red-500', 'border-gray-200');
+
+     // Preparem la petició asíncrona com al selector de quantitats
+-    const xhr = new XMLHttpRequest();
+-    // Utilitzem l'URL complet del teu backend central de l'API_SERRA
+-    xhr.open('POST', "{{ config('services.api_serra.url') }}/api/customers/tokens", true);
+-
+-    xhr.setRequestHeader('Content-Type', 'application/json');
+-
+-    xhr.onreadystatechange = function () {
+-        if (xhr.readyState === 4) {
+-            if (xhr.status === 201) { // 201 Created tal com ens ha mostrat Postman
+-                const response = JSON.parse(xhr.responseText);
+-
+-                if (response.status === 'success' && response.data.access_token) {
+-                    // Preparem la petició asíncrona local per buidar la sessió de PHP
+-                    const xhrLocal = new XMLHttpRequest();
+-                    xhrLocal.open('POST', "{{ route('orders.clearSession') }}", true);
+-                    xhrLocal.setRequestHeader('Content-Type', 'application/json');
+-                    // Injectem el token CSRF que Laravel demana per seguretat a les rutes locals POST
+-                    xhrLocal.setRequestHeader('X-CSRF-TOKEN', "{{ csrf_token() }}");
+-
+-                    xhrLocal.onreadystatechange = function () {
+-                        if (xhrLocal.readyState === 4) {
+-                            // Un cop la sessió de PHP s'ha buidat, guardem el token al navegador
+-                            sessionStorage.setItem('access_token', response.data.access_token);
+-                            // Redirigim finalment cap al carretó de la comanda actual
+-                            window.location.href = "{{ url('/comandes/current') }}";
+-                        }
+-                    };
+-                    xhrLocal.send(); // Enviem la petició de neteja de fons
+-                }
+-            } else {
+-                // Si la petició falla (credencials incorrectes, 401, etc.)
+-                loginError.textContent = 'El correu electrònic o la contrasenya no són correctes.';
+-                loginError.classList.remove('hidden');
+-                emailInput.classList.replace('border-gray-200', 'border-red-500');
+-                passwordInput.classList.replace('border-gray-200', 'border-red-500');
++    fetch("{{ config('services.api_serra.url') }}/api/customers/tokens", {
++        method: 'POST',
++        headers: {
++            'Content-Type': 'application/json'
++        },
++        body: JSON.stringify({ email: email, password: password })
++    })
++    .then(async response => {
++        if (response.status === 201) {
++            const responseData = await response.json();
++
++            if (responseData.status === 'success' && responseData.data.access_token) {
++                // Petició secundària amb fetch per netejar la sessió local de PHP
++                fetch("{{ route('orders.clearSession') }}", {
++                    method: 'POST',
++                    headers: {
++                        'Content-Type': 'application/json',
++                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
++                    }
++                })
++                .then(() => {
++                    sessionStorage.setItem('access_token', responseData.data.access_token);
++                    window.location.href = "{{ url('/comandes/current') }}";
++                });
+             }
++        } else {
++            loginError.textContent = 'El correu electrònic o la contrasenya no són correctes.';
++            loginError.classList.remove('hidden');
++            emailInput.classList.replace('border-gray-200', 'border-red-500');
++            passwordInput.classList.replace('border-gray-200', 'border-red-500');
+         }
+-    };
+-
+-    // Enviem les dades en format JSON neta cap a l'endpoint
+-    xhr.send(JSON.stringify({
+-        email: email,
+-        password: password
+-    }));
++    })
++    .catch(error => {
++        loginError.textContent = 'S\'ha produït un error de connexió amb el servidor.';
++        loginError.classList.remove('hidden');
++    });
+ });
+ </script>
+
+
+PERE@LAPTOP-UJ3EQ57O MINGW64 /c/xampp/htdocs/alan/HYBRID_CLIENT (feature/user-registration)
+$
