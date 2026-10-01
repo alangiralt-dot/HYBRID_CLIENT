@@ -217,7 +217,7 @@ Aquest és l'exemple més interessant perquè comparo el codi que em va proposar
 Per a navegar en comparacio.html has de tenir en compte els següents punts:
 * Els comentaris escrits completament en majúscules formen part de la comparació i la resta formen part del codi.
 * Els comentaris de la comparació estan formats per un títol en majúscules que sempre és visible i una descripció, la qual es fa visible en la part superior de la pantalla quan poses el cursor sobre el seu títol.
-* Els títols en majúscules que són clicables perquè el cursor es transforma en un pointer (mà), en ser clicats fan un scroll automàtic cap a un altre títol en majúscules amb el qual formen una parella única, connectant així una línia del codi proposat per la IA i una del codi que realment vaig escriure. Fet el scroll, el títol que forma una parella amb el que has clicat està escrit en groc fins que facis un altre scroll automàtic.
+* Els títols en majúscules que són clicables perquè el cursor es transforma en un pointer (mà), en ser clicats fan un scroll automàtic cap a un altre títol en majúscules amb el qual formen una parella única, connectant així una línia del codi proposada per la IA i una del codi que realment vaig escriure. Fet el scroll, el títol que forma una parella amb el que has clicat està escrit en groc fins que facis un altre scroll automàtic.
 * Cada títol només pot formar part d'una única parella, és a dir, cada títol és monògam perquè puguis preveure què passarà abans de clicar-lo.
 * Les rutes relatives dels fitxers, que encapçalen el seu codi, estan escrites en groc i et diuen si el codi és de la IA (AI FILE) o meu (MY FILE).
 
