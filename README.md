@@ -5,7 +5,7 @@
 *   MySQL / MariaDB
 
 1. Clona el repositori i navega fins al directori del projecte:
-   ```bash
+   ```
    git clone https://github.com/alangiralt-dot/HYBRID_CLIENT.git
    cd HYBRID_CLIENT
    git checkout develop
@@ -23,17 +23,17 @@
    ```
 
 4. Obre el fitxer `.env` i modifica els paràmetres de connexió a la base de dades perquè coincideixin amb el teu entorn local:
-  ```env
-  DB_CONNECTION=sqlite
-  # DB_HOST=127.0.0.1
-  # DB_PORT=3306
-  # DB_DATABASE=laravel
-  # DB_USERNAME=root
-  # DB_PASSWORD=
-  ```
-  ```env
-  API_BASE_URL=http://localhost:8000
-  ```
+   ```
+   DB_CONNECTION=sqlite
+   # DB_HOST=127.0.0.1
+   # DB_PORT=3306
+   # DB_DATABASE=laravel
+   # DB_USERNAME=root
+   # DB_PASSWORD=
+   ```
+   ```
+   API_BASE_URL=http://localhost:8000
+   ```
 5. Buida la memòria cau de configuració per forçar el registre automàtic dels controladors dels paquets:
    ```
    php artisan config:clear
