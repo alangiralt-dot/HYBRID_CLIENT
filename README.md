@@ -34,6 +34,7 @@
    ```
    API_BASE_URL=http://localhost:8000
    ```
+   *(El més net i professional és col·locar les variables personalitzades al final de tot del fitxer).*
 5. Buida la memòria cau de configuració per forçar el registre automàtic dels controladors dels paquets:
    ```
    php artisan config:clear
@@ -54,7 +55,7 @@
    ```
    php artisan serve --port=8001 &
    ```
-   *El backend del clientestarà actiu i a l'espera de peticions a `http://127.0.0.1:8001`*
+   *(El backend del client estarà actiu i a l'espera de peticions a `http://127.0.0.1:8001`).*
 
 ---
 
