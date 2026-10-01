@@ -1,25 +1,60 @@
-## 0. Guia de clonació i visualització local de la documentació
-Aquest apartat inicial té com a finalitat descriure el procediment per descarregar el repositori des de GitHub cap a l'entorn de treball local i habilitar la visualització immediata dels fitxers de documentació estructurats en format HTML.
-### 0.1 Clonació del Repositori Git
-Per obtenir una còpia exacta del projecte i de tota la seva documentació a l'ordinador, s'ha d'obrir la terminal de comandaments (Git Bash, Power Shell o CMD) i executar les següents instruccions ordenades:
+## 0 Requeriments i instal·lació
 
-i Navega fins a la carpeta local on vols desar el projecte (Exemple)
+*   PHP 8.2+
+*   Laravel 11
+*   MySQL / MariaDB
 
-```bash
-cd C:\xampp\htdocs\alan\
-```
+1. Clona el repositori i navega fins al directori del projecte:
+   ```bash
+   git clone https://github.com/alangiralt-dot/HYBRID_CLIENT.git
+   cd HYBRID_CLIENT
+   git checkout develop
+   ```
 
-ii Clona el repositori remot de GitHub des de la branca develop
+2. Executa `composer install` per recuperar les dependències:
+   ```
+   composer install
+   ```
 
-```bash
-git clone -b develop https://github.com/alangiralt-dot/HYBRID_CLIENT.git
-```
+3. Inicialitza el fitxer de configuració de l'entorn i genera la clau de l'aplicació:
+   ```
+   cp .env.example .env
+   php artisan key:generate
+   ```
 
-iii Accedeix a la carpeta arrel de l'aplicació que s'acaba de crear
-
-```bash
-cd HYBRID_CLIENT
-```
+4. Obre el fitxer `.env` i modifica els paràmetres de connexió a la base de dades perquè coincideixin amb el teu entorn local:
+  ```env
+  DB_CONNECTION=sqlite
+  # DB_HOST=127.0.0.1
+  # DB_PORT=3306
+  # DB_DATABASE=laravel
+  # DB_USERNAME=root
+  # DB_PASSWORD=
+  ```
+  ```env
+  API_BASE_URL=http://localhost:8000
+  ```
+5. Buida la memòria cau de configuració per forçar el registre automàtic dels controladors dels paquets:
+   ```
+   php artisan config:clear
+   ```
+   
+6. Reset the database layout and populate it with all datasets and bot variables:
+   ```
+   php artisan migrate:fresh --seed
+   ```
+   
+7. Verifiqueu si el port 8001 està lliure abans d'iniciar l'aplicació:
+   ```
+   netstat -ano | grep 8001
+   ```
+   *(Si el terminal no retorna cap text, el port està lliure i llest per utilitzar).*
+   
+8. Inicia el servidor web:
+   ```
+   php artisan serve --port=8001 &
+   ```
+   *El backend del clientestarà actiu i a l'espera de peticions a `http://127.0.0.1:8001`*
 
 ---
 
