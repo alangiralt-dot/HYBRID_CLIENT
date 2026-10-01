@@ -72,7 +72,7 @@ Per al desenvolupament assistit del client *frontend* d'aquesta pràctica, s'ha 
 Quan es treballa amb l'ecosistema de **Google AI** per a la transferència i anàlisi de codi font, s'han de tenir en compte les següents limitacions estructurals i tècniques de la plataforma, diferenciant clarament entre el comportament de la seva interfície web estàndard i entorns d'anàlisi dedicats:
 
 #### 1.2.1 Canal de Càrrega de Fitxers Adjunts
-* **Restricció de volum segons entorn:** La interfície web tradicional per a usuaris (https://google.com) limita la pujada a un màxim d'**1 fitxer per cada interacció (prompt)**. En canvi, els canals i entorns integrats d'auditoria de codi eliminen aquesta barrera, permetent la transferència multiparal·lela de fitxers.
+* **Restricció de volum segons entorn:** La interfície web tradicional per a usuaris (https://google.com/ai) limita la pujada a un màxim d'**1 fitxer per cada interacció (prompt)**. En canvi, els canals i entorns integrats d'auditoria de codi eliminen aquesta barrera, permetent la transferència multiparal·lela de fitxers.
 * **Mida límit:** Admet fitxers individuals amb un pes màxim d'uns **100 MB**, processant el document de manera nativa des del servidor de la IA.
 * **Formats de text i codi acceptats:** Permet la càrrega directa de fitxers amb extensions de programació estàndard (`.php`, `.js`, `.jsx`, `.html`, `.css`, `.json`) i documents de text o documentació (`.md`, `.txt`, `.pdf`). No admet arxius binaris ni executables per motius de seguretat.
 * **Restricció de fitxers comprimits (`.zip`/`.rar`):** La interfície web no sempre descomprimeix correctament estructures complexes de directoris de manera nativa. Per tant, es requereix bolcar els fitxers de codi de forma individual.
