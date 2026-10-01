@@ -222,12 +222,13 @@ Per a navegar en comparacio.html has de tenir en compte els següents punts:
 * Les rutes relatives dels fitxers, que encapçalen el seu codi, estan escrites en groc i et diuen si el codi és de la IA (AI FILE) o meu (MY FILE).
 
 **Obre ./docs/apartat_3_4/apartat_3_4.html amb Chrome fent-hi doble clic.**
+
 **Obre ./docs/apartat_3_4/comparacio.html amb Chrome fent-hi doble clic.**
 
 ---
 
 ## 4 Descripció del procés de connexió entre el frontend i el backend
-El sistema s'ha estructurat sota una arquitectura de comunicació híbrida i desacoblada dividida en dues capes clarament diferenciades: l'aplicació web client (frontend basat en rutes web, plantilles Blade, Tailwind CSS i JavaScript, executat a localhost:8001) i el servidor de l'API REST central (backend implementat en PHP/Laravel, encarregat de la lògica de negoci de fusteria i connectat a la base de dades MariaDB).
+El sistema s'ha estructurat sota una arquitectura de comunicació híbrida i desacoblada dividida en dues capes clarament diferenciades: l'aplicació web client (frontend basat en rutes web, plantilles Blade, Tailwind CSS i JavaScript) i el servidor de l'API REST central (backend implementat en PHP/Laravel, encarregat de la lògica de negoci de fusteria i connectat a la base de dades MariaDB).
 A continuació es detalla com s'ha implementat tècnicament aquest flux d'interacció i sincronització de dades segons el cicle de vida de les peticions:
 
 ### 4.1 Estratègia de Connexió i Arquitectura de Fluxos
@@ -288,14 +289,8 @@ L'assistència de la IA va ser clau per comprendre la necessitat imperiosa de pr
 
 ### 5.2 Reptes, Aprenentatges i Limitacions de la IA
 
----
-
-## 6 Codi al repositori de GitHub
-
-
-
 #### 5.2.1 El perill de les solucions genèriques:
-Durant el procés, es va fer evident que la IA tendeix a proposar arquitectures genèriques estandarditzades (com delegar tot el flux a una Single Page Application clàssica). Va requerir una ntervenció humana exigent i l'anàlisi estricte amb el depurador Xdebug per redirigir la IA i fer-li entendre que el projecte es basava en una arquitectura mixta molt particular, on coexisteixen la sessió de PHP local (per a usuaris anònims) i les consultes de servidor a servidor (mitjançant la Facade HTTP).
+Durant el procés, es va fer evident que la IA tendeix a proposar arquitectures genèriques estandarditzades (com delegar tot el flux a una Single Page Application clàssica). Va requerir una intervenció humana exigent i l'anàlisi estricte amb el depurador Xdebug per redirigir la IA i fer-li entendre que el projecte es basava en una arquitectura mixta molt particular, on coexisteixen la sessió de PHP local (per a usuaris anònims) i les consultes de servidor a servidor (mitjançant la Facade HTTP).
 
 #### 5.2.2 Gestió del Context i la Lògica de Negoci:
 La IA pot generar fragments de codi aïllats molt eficients, però té dificultats per comprendre les regles de negoci globals (com el càlcul de preus basat en variables de lots i tipus d'unitats de fusta com m² o m³). L'aprenentatge més valuós ha estat adonar-se que la IA necessita un control i un guiatge humà constant; sense una supervisió rigorosa línia a línia del codi del controlador (OrderController), el sistema hauria caigut en inconsistències de decimals o errors de persistència de dades.
