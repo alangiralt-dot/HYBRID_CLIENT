@@ -40,7 +40,7 @@
    php artisan config:clear
    ```
    
-6. Reset the database layout and populate it with all datasets and bot variables:
+6. Restableix l'estructura de la base de dades i l'omple amb tots els conjunts de dades i les variables del bot:
    ```
    php artisan migrate:fresh --seed
    ```
