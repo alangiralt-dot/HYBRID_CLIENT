@@ -265,7 +265,7 @@ Durant el desenvolupament d'aquesta arquitectura mixta es van haver de resoldre 
 
 * Solució: S'ha codificat un mecanisme de transició dinàmica en el DOM dins de la funció JavaScript testAddProduct. En el moment en què la petició asíncrona fetch rep de tornada un codi d'èxit 200 OK per part del controlador del servidor web, el script clona i emmagatzema l'HTML i les classes CSS originals de la fila del producte. Immediatament, modifica les propietats .className e .innerHTML del contenidor per commutar la línia per una franja verda de confirmació amb un element SVG de validació i el missatge "El producte s'ha afegit correctament a la comanda actual". Per finalitzar el cicle, s'inicialitza un temporitzador en segon pla mitjançant setTimeout() que, al cap d'un interval exacte de 4 segons, restableix el disseny original deixant la graella llesta per a noves operacions.
 
-## 4.3.3 Control de fluxos i renderització condicional de bucles buits
+#### 4.3.3 Control de fluxos i renderització condicional de bucles buits
 
 * Repte: L'aplicació ha de respondre de manera completament diferent en cas que la sessió de PHP no contingui productes, evitant errors d'execució en intentar mapejar o enviar arrays buits cap al servidor de l'API externa.
 
